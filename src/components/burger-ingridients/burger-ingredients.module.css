@@ -1,0 +1,52 @@
+.main {
+    composes: mr-10 from "~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
+    max-width: 600px;
+    width: 600px;
+}
+
+.tabBar {
+    height: 56px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+}
+
+.ingredientTypeList {
+}
+
+.ingredientTypeGroup {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+.ingredientTypeGroup h1 {
+    width: 100%;
+    text-align: start;
+}
+
+.ingredientCardList {
+    composes: pl-4 pr-4 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 320px);
+    overflow-y: auto;
+
+}
+
+
+.ingredientCard {
+    composes:  mb-8 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.ingredientTitle {
+    composes: text text_type_main-default from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    height: 48px;
+}

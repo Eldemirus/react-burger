@@ -1,0 +1,47 @@
+.main {
+    composes: pt-25 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    justify-content: flex-start;
+    height: calc(100vh - 300px);
+}
+
+.centerElements {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 600px);
+}
+
+.elementLine {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.elementLineInner {
+    composes: pt-4 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    composes: elementLine;
+    gap: 16px
+}
+
+.elementLineTop {
+    composes: elementLine;
+    composes: ml-8 pl-2 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+
+}
+.elementLineBottom {
+    composes: elementLine;
+    composes: pt-4 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    composes: ml-8 pl-2 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+}
+
+.totalLine {
+    composes: pt-10 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    display: flex;
+    gap: 40px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}

@@ -1,26 +1,42 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import AppHeader from "./components/app-header/app-header";
+import BurgerIngredients from "./components/burger-ingridients/burger-ingredients";
+import BurgerConstructor from "./components/burger-constructor/burger-constructor";
+import {data} from './utils/data';
+import "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
+
+
+import appStyles from './App.module.css';
+
+const BUN = 'bun';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [basket, setBasket] = React.useState<Array<any>>([]);
+    const addIngredient = (ingredient: any) => {
+        const newBasket = [...basket];
+        if (ingredient.type === BUN) {
+            const bun = newBasket.find(element => element.type === BUN);
+            if (bun) {
+                newBasket.splice(newBasket.indexOf(bun), 1);
+            }
+        }
+        setBasket([...newBasket, ingredient])
+    };
+    const delIngredient = (index: number) => {
+        const newBasket = [...basket];
+        newBasket.splice(index, 1);
+        setBasket(newBasket);
+    };
+
+    return (
+        <>
+            <AppHeader/>
+            <main className={appStyles.main}>
+                <BurgerIngredients basket={basket} ingredients={data} onClick={addIngredient}/>
+                <BurgerConstructor basket={basket} ingredients={data} onDelete={delIngredient}/>
+            </main>
+        </>
+    );
 }
 
 export default App;

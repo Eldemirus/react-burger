@@ -1,0 +1,44 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    width: calc(100% - 80px);
+    max-width: 1250px;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 40px auto;
+}
+
+.headerItem {
+    display: flex;
+    width: 33%;
+    align-items: center;
+    justify-content: center;
+}
+.Logo {
+    height: 50px;
+}
+
+.headerItemLast {
+    composes: headerItem;
+    justify-content: end;
+}
+.headerItemFirst {
+    composes: headerItem;
+    justify-content: start;
+}
+
+.navBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.navItem {
+    composes: p-5 ml-2 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 40px;
+}
