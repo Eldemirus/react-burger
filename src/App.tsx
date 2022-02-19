@@ -12,6 +12,7 @@ const BUN = 'bun';
 
 function App() {
     const [basket, setBasket] = React.useState<Array<any>>([]);
+
     const addIngredient = (ingredient: any) => {
         const newBasket = [...basket];
         if (ingredient.type === BUN) {
@@ -33,7 +34,7 @@ function App() {
             <AppHeader/>
             <main className={appStyles.main}>
                 <BurgerIngredients basket={basket} ingredients={data} onClick={addIngredient}/>
-                <BurgerConstructor basket={basket} ingredients={data} onDelete={delIngredient}/>
+                <BurgerConstructor basket={basket} onDelete={delIngredient}/>
             </main>
         </>
     );

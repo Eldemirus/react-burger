@@ -2,12 +2,10 @@ import constructorStyles from './burger-constructor.module.css';
 import React from "react";
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
+import PropTypes from "prop-types";
+import {ingridientType} from "../common/ingredient-type";
 
-const BurgerConstructor: React.FC<{
-    basket: Array<any>;
-    ingredients: Array<any>;
-    onDelete: Function;
-}> = ({basket, ingredients, onDelete}) => {
+const BurgerConstructor = ({basket, onDelete}) => {
     const topElement = basket.find(element => element.type === 'bun');
     const elements = basket.filter(element => element.type !== 'bun');
 
@@ -65,5 +63,10 @@ const BurgerConstructor: React.FC<{
         </>
     )
 }
+
+BurgerConstructor.propTypes = {
+    basket: PropTypes.arrayOf(ingridientType),
+    onClick: PropTypes.func,
+};
 
 export default BurgerConstructor;

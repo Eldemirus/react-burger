@@ -2,12 +2,10 @@ import {Counter, Tab} from '@ya.praktikum/react-developer-burger-ui-components';
 import ingStyles from './burger-ingredients.module.css';
 import React from "react";
 import Price from "../common/price";
+import PropTypes from 'prop-types';
+import {ingridientType} from "../common/ingredient-type";
 
-const BurgerIngredient: React.FC<{
-    ingredient: any;
-    amount: number
-    onClick: Function;
-}> = ({ingredient, amount, onClick}) => {
+const BurgerIngredient = ({ingredient, amount, onClick}) => {
     const click = () => {
         onClick(ingredient);
     }
@@ -23,10 +21,13 @@ const BurgerIngredient: React.FC<{
     )
 }
 
+BurgerIngredient.propTypes = {
+    ingredients: ingridientType,
+    amount: PropTypes.number.isRequired,
+    onClick: PropTypes.func,
+}
 
-const BurgerIngredientGroup: React.FC<{
-    title: string;
-}> = ({title, children}) => {
+const BurgerIngredientGroup = ({title, children}) => {
     return (
         <>
             <h1 className="text text_type_main-medium">{title}</h1>
@@ -37,12 +38,12 @@ const BurgerIngredientGroup: React.FC<{
     )
 }
 
+BurgerIngredientGroup.propTypes = {
+    title: PropTypes.string.isRequired,
+    children: PropTypes.element
+}
 
-const BurgerIngredients: React.FC<{
-    ingredients: Array<any>;
-    basket: Array<any>;
-    onClick: Function;
-}> = ({ingredients, basket, onClick}) => {
+const BurgerIngredients = ({ingredients, basket, onClick}) => {
     const [current, setCurrent] = React.useState('bun')
 
     const types = [
@@ -51,7 +52,7 @@ const BurgerIngredients: React.FC<{
         {type: "sauce", title: "Соусы"},
     ];
 
-    const countItems = (ingredient:any) => {
+    const countItems = (ingredient) => {
         const count = basket.filter(elem => elem._id === ingredient._id).length;
         console.log('COUNT', ingredient, count);
         return count;
@@ -89,4 +90,11 @@ const BurgerIngredients: React.FC<{
     )
 }
 
+BurgerIngredients.propTypes = {
+    ingredients: PropTypes.arrayOf(ingridientType),
+    basket: PropTypes.arrayOf(ingridientType),
+    onClick: PropTypes.func,
+};
+
 export default BurgerIngredients;
+
