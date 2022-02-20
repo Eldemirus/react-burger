@@ -1,11 +1,18 @@
 .header {
     display: flex;
     flex-direction: row;
+    justify-content: center;
     width: calc(100% - 80px);
-    max-width: 1250px;
+    margin: 40px auto 0 auto;
+    background-color: #1C1C21;
+}
+
+.headerContainer {
+    display: flex;
     justify-content: space-evenly;
     align-items: center;
-    margin: 40px auto;
+    flex-direction: row;
+    width: 1280px;
 }
 
 .headerItem {
@@ -32,10 +39,11 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 8px;
 }
 
 .navItem {
-    composes: p-5 ml-2 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    composes: p-5 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
     display: flex;
     flex-direction: row;
     justify-content: center;

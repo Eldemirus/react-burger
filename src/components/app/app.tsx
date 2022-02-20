@@ -1,12 +1,12 @@
 import React from 'react';
-import AppHeader from "./components/app-header/app-header";
-import BurgerIngredients from "./components/burger-ingridients/burger-ingredients";
-import BurgerConstructor from "./components/burger-constructor/burger-constructor";
-import {data} from './utils/data';
+import AppHeader from "../app-header/app-header";
+import BurgerIngredients from "../burger-ingridients/burger-ingredients";
+import BurgerConstructor from "../burger-constructor/burger-constructor";
+import {data} from '../../utils/data';
 import "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
 
 
-import appStyles from './App.module.css';
+import appStyles from './app.module.css';
 
 const BUN = 'bun';
 

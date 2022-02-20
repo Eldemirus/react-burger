@@ -1,25 +1,30 @@
+import React, {useMemo} from "react";
 import constructorStyles from './burger-constructor.module.css';
-import React from "react";
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
-import PropTypes from "prop-types";
-import {ingridientType} from "../common/ingredient-type";
+import {Ingredient} from "../common/ingredient";
 
-const BurgerConstructor = ({basket, onDelete}) => {
+interface BurgerContructorProps {
+    basket: Array<Ingredient>;
+    onDelete: Function;
+}
+
+const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) => {
     const topElement = basket.find(element => element.type === 'bun');
     const elements = basket.filter(element => element.type !== 'bun');
 
-    let total = basket.reduce((val, a) => a.price + val, 0);
+    const total = useMemo(() =>  basket.reduce((val, a) => a.price + val, 0), [basket]);
 
     return (
         <>
             <section className={constructorStyles.main}>
                 {topElement && (
                     <div className={constructorStyles.elementLineTop}>
+                        <div className={constructorStyles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="top"
                             isLocked={true}
-                            text={topElement.name}
+                            text={topElement.name + ' (верх)'}
                             price={topElement.price}
                             thumbnail={topElement.image}
                         />
@@ -30,7 +35,9 @@ const BurgerConstructor = ({basket, onDelete}) => {
 
                     {elements.map((element, index) => (
                         <div className={constructorStyles.elementLineInner} key={index}>
-                            <DragIcon type="primary"/>
+                            <div className={constructorStyles.dragBox}>
+                                <DragIcon type="primary"/>
+                            </div>
                             <ConstructorElement
                                 key={index}
                                 text={element.name}
@@ -45,28 +52,26 @@ const BurgerConstructor = ({basket, onDelete}) => {
 
                 {topElement && (
                     <div className={constructorStyles.elementLineBottom}>
+                        <div className={constructorStyles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
-                            text={topElement.name}
+                            text={topElement.name + ' (низ)'}
                             price={topElement.price}
                             thumbnail={topElement.image}
                         />
                     </div>
                 )}
-
-                <div className={constructorStyles.totalLine}>
-                    <Price value={total}/>
-                    <Button type="primary">Оформить заказ</Button>
-                </div>
+                {
+                    total > 0 &&
+                    <div className={constructorStyles.totalLine}>
+                        <Price value={total} size={'medium'}/>
+                        <Button type="primary">Оформить заказ</Button>
+                    </div>
+                }
             </section>
         </>
     )
 }
-
-BurgerConstructor.propTypes = {
-    basket: PropTypes.arrayOf(ingridientType),
-    onClick: PropTypes.func,
-};
 
 export default BurgerConstructor;

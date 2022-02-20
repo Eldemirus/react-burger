@@ -1,5 +1,4 @@
 .main {
-    composes: mr-10 from "~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
     max-width: 600px;
     width: 600px;
 }
@@ -31,7 +30,7 @@
     composes: pl-4 pr-4 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 320px);
+    height: calc(100vh - 300px);
     overflow-y: auto;
 
 }
