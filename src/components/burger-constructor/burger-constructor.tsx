@@ -6,7 +6,7 @@ import {Ingredient} from "../common/ingredient";
 
 interface BurgerContructorProps {
     basket: Array<Ingredient>;
-    onDelete: Function;
+    onDelete: (index:number) => void;
 }
 
 const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) => {

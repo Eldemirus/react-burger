@@ -7,7 +7,7 @@ import {Ingredient} from "../common/ingredient";
 const BurgerIngredient: React.FC<{
     ingredient: Ingredient;
     amount: number
-    onClick: Function;
+    onClick: (ingredient: Ingredient) => void;
 }> = ({ingredient, amount, onClick}) => {
     const click = () => {
         onClick(ingredient);
@@ -46,7 +46,7 @@ interface IngredientTypes {
 const BurgerIngredients: React.FC<{
     ingredients: Array<Ingredient>;
     basket: Array<Ingredient>;
-    onClick: Function;
+    onClick: (ingredient: Ingredient) => void;
 }> = ({ingredients, basket, onClick}) => {
     const [current, setCurrent] = React.useState('bun')
 
