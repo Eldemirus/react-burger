@@ -3,17 +3,32 @@ import constructorStyles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
 import {Ingredient} from "../common/ingredient";
+import OrderDetails from "../order-details/order-details";
+import {Order} from "../common/order";
 
 interface BurgerContructorProps {
     basket: Array<Ingredient>;
-    onDelete: (index:number) => void;
+    onDelete: (index: number) => void;
 }
 
 const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) => {
+    const [showOrder, setShowOrder] = React.useState(false);
+    const [order, setOrder] = React.useState({id: '000000'});
+
     const topElement = basket.find(element => element.type === 'bun');
     const elements = basket.filter(element => element.type !== 'bun');
 
-    const total = useMemo(() =>  basket.reduce((val, a) => a.price + val, 0), [basket]);
+    const total = useMemo(() => basket.reduce((val, a) => a.price + val, 0), [basket]);
+
+    const onClick = () => {
+        const orderId:string = String(Math.round(Math.random() * 100000)).padStart(6, '0');
+        const newOrder: Order = {id: orderId};
+        setOrder(newOrder);
+        setShowOrder(true);
+    }
+    const handleClose = React.useCallback(() => {
+        setShowOrder(false)
+    }, [])
 
     return (
         <>
@@ -66,10 +81,11 @@ const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) 
                     total > 0 &&
                     <div className={constructorStyles.totalLine}>
                         <Price value={total} size={'medium'}/>
-                        <Button type="primary">Оформить заказ</Button>
+                        <Button type="primary" onClick={onClick}>Оформить заказ</Button>
                     </div>
                 }
             </section>
+            {showOrder && <OrderDetails order={order} handleClose={handleClose}/>}
         </>
     )
 }
