@@ -3,24 +3,47 @@ import ingStyles from './burger-ingredients.module.css';
 import React from "react";
 import Price from "../common/price";
 import {Ingredient} from "../common/ingredient";
+import IngredientDetails from "../ingredient-details/ingredient-details";
+import Modal from "../modal/modal";
 
 const BurgerIngredient: React.FC<{
     ingredient: Ingredient;
     amount: number
     onClick: (ingredient: Ingredient) => void;
 }> = ({ingredient, amount, onClick}) => {
-    const click = () => {
+    const [showDetails, setShowDetails] = React.useState(false);
+    const click = (e: any) => {
+        e.preventDefault();
         onClick(ingredient);
     }
+    const showIngredientDetails = React.useCallback(() => {
+        setShowDetails(true);
+    }, []);
+
+    const hideIngredientDetails = React.useCallback(() => {
+        setShowDetails(false)
+    }, []);
+
     return (
-        <div className={ingStyles.ingredientCard} onClick={click}>
-            {amount > 0 && (
-                <Counter count={amount} size="default"/>
-            )}
-            <img src={ingredient.image} alt={ingredient.name} className="px-4"/>
-            <Price value={ingredient.price} className='py-1'/>
-            <div className={ingStyles.ingredientTitle}>{ingredient.name}</div>
-        </div>
+        <>
+            <div
+                className={ingStyles.ingredientCard}
+                onContextMenu={click}
+                onClick={showIngredientDetails}
+            >
+                {amount > 0 && (
+                    <Counter count={amount} size="default"/>
+                )}
+                <img src={ingredient.image} alt={ingredient.name} className="px-4"/>
+                <Price value={ingredient.price} className='py-1'/>
+                <div className={ingStyles.ingredientTitle}>{ingredient.name}</div>
+            </div>
+            {showDetails &&
+                <Modal handleClose={hideIngredientDetails} title={'Детали ингредиента'}>
+                    <IngredientDetails ingredient={ingredient}/>
+                </Modal>
+            }
+        </>
     )
 }
 
