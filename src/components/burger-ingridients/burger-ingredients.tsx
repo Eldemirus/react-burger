@@ -4,6 +4,7 @@ import React from "react";
 import Price from "../common/price";
 import {Ingredient} from "../common/ingredient";
 import IngredientDetails from "../ingredient-details/ingredient-details";
+import Modal from "../modal/modal";
 
 const BurgerIngredient: React.FC<{
     ingredient: Ingredient;
@@ -28,7 +29,8 @@ const BurgerIngredient: React.FC<{
             <div
                 className={ingStyles.ingredientCard}
                 onContextMenu={click}
-                onClick={showIngredientDetails}>
+                onClick={showIngredientDetails}
+            >
                 {amount > 0 && (
                     <Counter count={amount} size="default"/>
                 )}
@@ -36,7 +38,11 @@ const BurgerIngredient: React.FC<{
                 <Price value={ingredient.price} className='py-1'/>
                 <div className={ingStyles.ingredientTitle}>{ingredient.name}</div>
             </div>
-            {showDetails && <IngredientDetails ingredient={ingredient} handleClose={hideIngredientDetails}/>}
+            {showDetails &&
+                <Modal handleClose={hideIngredientDetails}>
+                    <IngredientDetails ingredient={ingredient}/>
+                </Modal>
+            }
         </>
     )
 }

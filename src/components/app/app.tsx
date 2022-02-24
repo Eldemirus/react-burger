@@ -2,16 +2,13 @@ import React from 'react';
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingridients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-// import {data} from '../../utils/data';
-import "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
-
-
-import appStyles from './app.module.css';
 import {Ingredient} from "../common/ingredient";
 import ErrorBoundary from "../error-boundary/error-boundary";
+import "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
+import appStyles from './app.module.css';
+import {URL} from '../../utils/parameters';
 
 const BUN = 'bun';
-const URL = 'https://norma.nomoreparties.space/api/ingredients';
 
 function App() {
     const [basket, setBasket] = React.useState<Array<Ingredient>>([]);
@@ -35,12 +32,18 @@ function App() {
 
     React.useEffect(() => {
         fetch(URL)
-            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                } else {
+                    throw new Error('ошибка получения данных');
+                }
+            })
             .then(answer => {
                 if (answer.success) {
                     setData(answer.data)
                 } else {
-                    throw new Error('ошибка получения данных');
+                    throw new Error('ошибка обработки запрос');
                 }
             })
             .catch(err => console.log('ERROR', err));

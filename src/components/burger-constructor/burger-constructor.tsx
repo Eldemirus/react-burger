@@ -5,6 +5,7 @@ import Price from "../common/price";
 import {Ingredient} from "../common/ingredient";
 import OrderDetails from "../order-details/order-details";
 import {Order} from "../common/order";
+import Modal from "../modal/modal";
 
 interface BurgerContructorProps {
     basket: Array<Ingredient>;
@@ -12,8 +13,7 @@ interface BurgerContructorProps {
 }
 
 const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) => {
-    const [showOrder, setShowOrder] = React.useState(false);
-    const [order, setOrder] = React.useState({id: '000000'});
+    const [order, setOrder] = React.useState<Order>();
 
     const topElement = basket.find(element => element.type === 'bun');
     const elements = basket.filter(element => element.type !== 'bun');
@@ -24,10 +24,9 @@ const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) 
         const orderId:string = String(Math.round(Math.random() * 100000)).padStart(6, '0');
         const newOrder: Order = {id: orderId};
         setOrder(newOrder);
-        setShowOrder(true);
     }
     const handleClose = React.useCallback(() => {
-        setShowOrder(false)
+        setOrder(undefined);
     }, [])
 
     return (
@@ -85,7 +84,11 @@ const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) 
                     </div>
                 }
             </section>
-            {showOrder && <OrderDetails order={order} handleClose={handleClose}/>}
+            {order && (
+                <Modal handleClose={handleClose}>
+                    <OrderDetails order={order}/>
+                </Modal>
+            )}
         </>
     )
 }

@@ -8,14 +8,11 @@ const modalRoot = document.getElementById("react-modals") as HTMLElement;
 
 interface ModalOverlayProps {
     onClick: () => void;
-    children?: ReactElement;
 }
 
-const ModalOverlay: React.FC<ModalOverlayProps> = ({onClick, children}) => {
+const ModalOverlay: React.FC<ModalOverlayProps> = ({onClick}) => {
     return (
-        <div className={styles.overlay} onClick={onClick}>
-            {children}
-        </div>
+        <div className={styles.overlay} onClick={onClick}/>
     )
 }
 
