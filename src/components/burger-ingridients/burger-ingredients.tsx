@@ -39,7 +39,7 @@ const BurgerIngredient: React.FC<{
                 <div className={ingStyles.ingredientTitle}>{ingredient.name}</div>
             </div>
             {showDetails &&
-                <Modal handleClose={hideIngredientDetails}>
+                <Modal handleClose={hideIngredientDetails} title={'Детали ингредиента'}>
                     <IngredientDetails ingredient={ingredient}/>
                 </Modal>
             }
