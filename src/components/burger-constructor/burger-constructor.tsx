@@ -1,33 +1,44 @@
-import React, {useMemo} from "react";
+import React, {useContext} from "react";
 import constructorStyles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
-import {Ingredient} from "../common/ingredient";
 import OrderDetails from "../order-details/order-details";
 import {Order} from "../common/order";
 import Modal from "../modal/modal";
+import {OrderActionKind, OrderContext} from "../../utils/order-context";
+import {sendOrder} from "../../utils/api";
+import {OrderItem} from "../common/order-item";
 
-interface BurgerContructorProps {
-    basket: Array<Ingredient>;
-    onDelete: (index: number) => void;
-}
 
-const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) => {
+const BurgerConstructor = () => {
     const [order, setOrder] = React.useState<Order>();
+    const {orderState, orderDispatch} = useContext(OrderContext);
 
-    const topElement = basket.find(element => element.type === 'bun');
-    const elements = basket.filter(element => element.type !== 'bun');
+    const topElement = orderState.items.find(element => element.ingredient.type === 'bun');
+    const elements = orderState.items.filter(element => element.ingredient.type !== 'bun');
 
-    const total = useMemo(() => basket.reduce((val, a) => a.price + val, 0), [basket]);
+    // const total = useMemo(() => {
+    //     return elements.reduce((val, a) => a.ingredient.price + val, 0)
+    //         + (topElement ? topElement.ingredient?.price : 0) * 2;
+    // }, [orderState.items]);
+
+    const onDelete = (item: OrderItem) => {
+        orderDispatch({type: OrderActionKind.REMOVE, payload: item.id})
+    }
 
     const onClick = () => {
-        const orderId:string = String(Math.round(Math.random() * 100000)).padStart(6, '0');
-        const newOrder: Order = {id: orderId};
-        setOrder(newOrder);
+        const orderData = orderState.items.map(orderItem => orderItem.ingredient._id);
+        sendOrder(orderData)
+            .then(orderInfo => {
+                const newOrder: Order = {id: orderInfo.order.number, name: orderInfo.name};
+                setOrder(newOrder);
+            })
+
     }
     const handleClose = React.useCallback(() => {
         setOrder(undefined);
-    }, [])
+        orderDispatch({type: OrderActionKind.CLEAR})
+    }, [orderDispatch])
 
     return (
         <>
@@ -38,26 +49,26 @@ const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) 
                         <ConstructorElement
                             type="top"
                             isLocked={true}
-                            text={topElement.name + ' (верх)'}
-                            price={topElement.price}
-                            thumbnail={topElement.image}
+                            text={topElement.ingredient.name + ' (верх)'}
+                            price={topElement.ingredient.price}
+                            thumbnail={topElement.ingredient.image}
                         />
                     </div>
                 )}
 
                 <div className={constructorStyles.centerElements}>
 
-                    {elements.map((element, index) => (
-                        <div className={constructorStyles.elementLineInner} key={index}>
+                    {elements.map((element) => (
+                        <div className={constructorStyles.elementLineInner} key={element.id}>
                             <div className={constructorStyles.dragBox}>
                                 <DragIcon type="primary"/>
                             </div>
                             <ConstructorElement
-                                key={index}
-                                text={element.name}
-                                price={element.price}
-                                handleClose={() => onDelete(basket.indexOf(element))}
-                                thumbnail={element.image}
+                                key={element.id}
+                                text={element.ingredient.name}
+                                price={element.ingredient.price}
+                                handleClose={() => onDelete(element)}
+                                thumbnail={element.ingredient.image}
                             />
                         </div>
 
@@ -70,16 +81,16 @@ const BurgerConstructor: React.FC<BurgerContructorProps> = ({basket, onDelete}) 
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
-                            text={topElement.name + ' (низ)'}
-                            price={topElement.price}
-                            thumbnail={topElement.image}
+                            text={topElement.ingredient.name + ' (низ)'}
+                            price={topElement.ingredient.price}
+                            thumbnail={topElement.ingredient.image}
                         />
                     </div>
                 )}
                 {
-                    total > 0 &&
+                    orderState.total > 0 &&
                     <div className={constructorStyles.totalLine}>
-                        <Price value={total} size={'medium'}/>
+                        <Price value={orderState.total} size={'medium'}/>
                         <Button type="primary" onClick={onClick}>Оформить заказ</Button>
                     </div>
                 }
