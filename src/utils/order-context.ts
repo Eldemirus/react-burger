@@ -54,8 +54,9 @@ export const orderReducerFun = (state: OrderState, action: OrderAction): OrderSt
             return {...state, items: newItems, total: totalRemoved};
         case OrderActionKind.CLEAR:
             return {...state, items: [], total: 0};
+        default:
+            return state;
     }
-    return state;
 }
 
 export interface OrderContextType {
