@@ -1,18 +1,20 @@
-import React, {useContext} from "react";
+import React from "react";
 import constructorStyles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
 import OrderDetails from "../order-details/order-details";
 import {Order} from "../common/order";
 import Modal from "../modal/modal";
-import {OrderActionKind, OrderContext} from "../../utils/order-context";
 import {sendOrder} from "../../utils/api";
 import {OrderItem} from "../common/order-item";
+import {useDispatch, useSelector} from "react-redux";
+import {clearOrder, deleteOrderItem, OrderState, setOrder} from "../../services/reducers/order";
+import {RootState} from "../../services/store";
 
 
 const BurgerConstructor = () => {
-    const [order, setOrder] = React.useState<Order>();
-    const {orderState, orderDispatch} = useContext(OrderContext);
+    const orderState = useSelector<RootState>(state => state.order) as OrderState;
+    const dispatch = useDispatch();
 
     const topElement = orderState.items.find(element => element.ingredient.type === 'bun');
     const elements = orderState.items.filter(element => element.ingredient.type !== 'bun');
@@ -23,7 +25,7 @@ const BurgerConstructor = () => {
     // }, [orderState.items]);
 
     const onDelete = (item: OrderItem) => {
-        orderDispatch({type: OrderActionKind.REMOVE, payload: item.id})
+        dispatch(deleteOrderItem(item))
     }
 
     const onClick = () => {
@@ -31,14 +33,13 @@ const BurgerConstructor = () => {
         sendOrder(orderData)
             .then(orderInfo => {
                 const newOrder: Order = {id: orderInfo.order.number, name: orderInfo.name};
-                setOrder(newOrder);
+                dispatch(setOrder(newOrder));
             })
 
     }
     const handleClose = React.useCallback(() => {
-        setOrder(undefined);
-        orderDispatch({type: OrderActionKind.CLEAR})
-    }, [orderDispatch])
+        dispatch(clearOrder());
+    }, [dispatch])
 
     return (
         <>
@@ -95,9 +96,9 @@ const BurgerConstructor = () => {
                     </div>
                 }
             </section>
-            {order && (
+            {orderState.order && (
                 <Modal handleClose={handleClose}>
-                    <OrderDetails order={order}/>
+                    <OrderDetails order={orderState.order}/>
                 </Modal>
             )}
         </>

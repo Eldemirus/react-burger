@@ -1,29 +1,33 @@
 import {Counter, Tab} from '@ya.praktikum/react-developer-burger-ui-components';
 import ingStyles from './burger-ingredients.module.css';
-import React, {useContext, useMemo} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
 import Price from "../common/price";
 import {Ingredient} from "../common/ingredient";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import Modal from "../modal/modal";
-import {OrderActionKind, OrderContext, OrderContextType} from "../../utils/order-context";
+import {useDispatch, useSelector} from "react-redux";
+import {addOrderItem, OrderState} from "../../services/reducers/order";
+import {RootState} from "../../services/store";
+import {OrderItem} from "../common/order-item";
+import {clearIngredientInfo, IngredientsState, setIngredientInfo} from "../../services/reducers/ingredients";
 
 const BurgerIngredient: React.FC<{
     ingredient: Ingredient;
-    amount: number
-    onClick: (ingredient: Ingredient) => void;
-}> = ({ingredient, amount, onClick}) => {
-    const [showDetails, setShowDetails] = React.useState(false);
+    amount: number;
+}> = ({ingredient, amount}) => {
+    const dispatch = useDispatch();
     const click = (e: any) => {
         e.preventDefault();
-        onClick(ingredient);
+        addItem();
     }
     const showIngredientDetails = React.useCallback(() => {
-        setShowDetails(true);
-    }, []);
+        dispatch(setIngredientInfo(ingredient));
+    }, [dispatch, ingredient]);
 
-    const hideIngredientDetails = React.useCallback(() => {
-        setShowDetails(false)
-    }, []);
+    const addItem = () => {
+        dispatch(addOrderItem(ingredient));
+    }
+
 
     return (
         <>
@@ -39,11 +43,6 @@ const BurgerIngredient: React.FC<{
                 <Price value={ingredient.price} className='py-1'/>
                 <div className={ingStyles.ingredientTitle}>{ingredient.name}</div>
             </div>
-            {showDetails &&
-                <Modal handleClose={hideIngredientDetails} title={'Детали ингредиента'}>
-                    <IngredientDetails ingredient={ingredient}/>
-                </Modal>
-            }
         </>
     )
 }
@@ -54,7 +53,7 @@ const BurgerIngredientGroup: React.FC<{
     type: string;
 }> = ({title, type, children}) => {
     return (
-        <div className={' pt-10'}>
+        <div className={' pt-10'} id={type}>
             <h1 className="text text_type_main-medium" id={type}>{title}</h1>
             <div className={ingStyles.ingredientTypeGroup}>
                 {children}
@@ -74,33 +73,34 @@ const ingredientTypes: IngredientTypes[] = [
     {type: "sauce", title: "Соусы"},
 ];
 
-const BurgerIngredients: React.FC<{
-    ingredients: Array<Ingredient>;
-}> = ({ingredients}) => {
+const BurgerIngredients: React.FC = () => {
     const [current, setCurrent] = React.useState('bun')
-    const {orderState, orderDispatch} = useContext<OrderContextType>(OrderContext);
+    const dispatch = useDispatch();
+    const orderState = useSelector<RootState>(state => state.order) as OrderState;
+    const {ingredients, ingredientInfo} = useSelector<RootState>(state => state.ingredients) as IngredientsState;
+    const scrollerRef = useRef<HTMLHeadingElement>(null);
+
 
     const onTabClick = (val: string) => {
         const element = document.getElementById(val);
         if (element) {
             element.scrollIntoView({behavior: "smooth"});
         }
-        setCurrent(val);
+        // setCurrent(val);
     }
 
-    const addItem = (ingredient: Ingredient) => {
-        orderDispatch({type: OrderActionKind.ADD, payload: ingredient});
-    }
+    const hideIngredientDetails = React.useCallback(() => {
+        dispatch(clearIngredientInfo())
+    }, [dispatch]);
 
-
-    const itemCounter = useMemo(() => orderState.items.reduce((acc: any, curr) => {
+    const itemCounter = useMemo(() => orderState.items.reduce((acc: any, curr: OrderItem) => {
         if (acc[curr.ingredient._id]) {
             ++acc[curr.ingredient._id]
         } else {
             acc[curr.ingredient._id] = 1;
         }
         return acc;
-    }, {}), [orderState]);
+    }, {}), [orderState.items]);
 
     const getIngredientsByType = (type: string) => ingredients.filter((ingredient: Ingredient) => ingredient.type === type);
 
@@ -121,28 +121,56 @@ const BurgerIngredients: React.FC<{
         </div>
     )
 
+
+    useEffect(() => {
+        const onScroll = (ev: Event) => {
+            const scroller = ev.target as HTMLDivElement;
+            let min = Number.MAX_VALUE;
+            let nearest = 'bun';
+            ingredientTypes.forEach((type) => {
+                const elem = document.getElementById(type.type);
+                const currentOffset = Math.abs((elem? elem.offsetTop:0) - scroller.offsetTop - scroller.scrollTop);
+                if (min > currentOffset) {
+                    min = currentOffset;
+                    nearest = type.type;
+                }
+            })
+            if (nearest){
+                setCurrent(nearest)
+            }
+        }
+        scrollerRef.current?.addEventListener('scroll', (e)=> onScroll(e));
+        return scrollerRef.current?.removeEventListener('scroll', (e)=> onScroll(e));
+    }, [scrollerRef])
+
     return (
         <section className={ingStyles.main}>
             <h1 className="pt-10 pb-5 text text_type_main-large">Соберите бургер</h1>
-            <IngredientTabs />
-            <div className={ingStyles.ingredientCardList}>
+            <IngredientTabs/>
+            <div className={ingStyles.ingredientCardList} ref={scrollerRef}>
                 {ingredientTypes
                     .map((ingredientType) => (
-                        <BurgerIngredientGroup key={ingredientType.type}
-                                               type={ingredientType.type}
-                                               title={ingredientType.title}>
+                        <BurgerIngredientGroup
+                            key={ingredientType.type}
+                            type={ingredientType.type}
+                            title={ingredientType.title}
+                        >
                             {getIngredientsByType(ingredientType.type)
                                 .map((ingredient) => (
                                     <BurgerIngredient
                                         key={ingredient._id}
                                         ingredient={ingredient}
-                                        onClick={(ingredient) => addItem(ingredient)}
                                         amount={itemCounter[ingredient._id]}
                                     />
                                 ))}
                         </BurgerIngredientGroup>
                     ))}
             </div>
+            {ingredientInfo &&
+                <Modal handleClose={hideIngredientDetails} title={'Детали ингредиента'}>
+                    <IngredientDetails ingredient={ingredientInfo}/>
+                </Modal>
+            }
         </section>
     )
 }
