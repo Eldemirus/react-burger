@@ -8,6 +8,8 @@ import appStyles from './app.module.css';
 import {getIngredients} from "../../utils/api";
 import {setIngredients} from "../../services/reducers/ingredients";
 import {useDispatch} from "react-redux";
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 function App() {
     const dispatch = useDispatch();
@@ -22,10 +24,12 @@ function App() {
         <>
             <ErrorBoundary>
                 <AppHeader/>
-                <main className={appStyles.main}>
-                    <BurgerIngredients/>
-                    <BurgerConstructor />
-                </main>
+                <DndProvider backend={HTML5Backend}>
+                    <main className={appStyles.main}>
+                        <BurgerIngredients/>
+                        <BurgerConstructor/>
+                    </main>
+                </DndProvider>
             </ErrorBoundary>
         </>
     );

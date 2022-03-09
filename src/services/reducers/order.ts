@@ -6,6 +6,7 @@ import {Order} from "../../components/common/order";
 
 export interface OrderState {
     items: OrderItem[];
+    bunItem?: OrderItem;
     total: number;
     order?: Order;
 }
@@ -26,22 +27,29 @@ export const orderSlice = createSlice({
     initialState,
     reducers: {
         addOrderItem: (state: Draft<OrderState>, action: PayloadAction<Ingredient>) => {
-            if (action.payload.type === BUN) {
-                const bun = state.items.find(element => element.ingredient.type === BUN);
-                if (bun) {
-                    state.items.splice(state.items.indexOf(bun), 1);
-                    state.total -= countTotalChange(bun.ingredient);
-                }
-            }
-            state.total += countTotalChange(action.payload);
-            state.items.push({
+            const item = {
                 id: uuid(),
                 ingredient: action.payload
-            });
+            };
+            if (action.payload.type === BUN) {
+                if (state.bunItem) {
+                    state.total -= countTotalChange(state.bunItem.ingredient);
+                }
+                state.bunItem = item;
+            } else {
+                state.items.push(item);
+            }
+            state.total += countTotalChange(action.payload);
         },
         deleteOrderItem: (state: Draft<OrderState>, action: PayloadAction<OrderItem>) => {
             state.total -= countTotalChange(action.payload.ingredient);
             state.items.splice(state.items.indexOf(action.payload), 1);
+        },
+        swapOrderItems:(state: Draft<OrderState>, action: PayloadAction<{from:number, to:number}>) => {
+            const tmp = state.items[action.payload.to];
+            state.items[action.payload.to] = state.items[action.payload.from];
+            tmp.index = action.payload.from;
+            state.items[action.payload.from] = tmp;
         },
         clearOrder: (state) => {
             state.items = [];
@@ -55,4 +63,4 @@ export const orderSlice = createSlice({
 })
 
 const {actions} = orderSlice;
-export const { addOrderItem, deleteOrderItem, clearOrder, setOrder } = actions;
+export const { addOrderItem, deleteOrderItem, clearOrder, setOrder, swapOrderItems } = actions;

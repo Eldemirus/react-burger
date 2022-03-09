@@ -1,4 +1,4 @@
-import React from "react";
+import React, {FC, useCallback, useRef} from "react";
 import constructorStyles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
@@ -8,21 +8,107 @@ import Modal from "../modal/modal";
 import {sendOrder} from "../../utils/api";
 import {OrderItem} from "../common/order-item";
 import {useDispatch, useSelector} from "react-redux";
-import {clearOrder, deleteOrderItem, OrderState, setOrder} from "../../services/reducers/order";
+import {clearOrder, deleteOrderItem, OrderState, setOrder, swapOrderItems} from "../../services/reducers/order";
 import {RootState} from "../../services/store";
+import {useDrag, useDrop} from "react-dnd";
+import type {XYCoord, Identifier} from 'dnd-core'
 
+
+const Draggable: FC<{
+    index: number,
+    id: string,
+    moveItems: (from: number, to: number) => void
+}> = ({index, moveItems, id, children}) => {
+    const ref = useRef<HTMLDivElement>(null)
+
+    const ORDER_TYPE = 'order-items';
+
+    const [{handlerId}, drop] = useDrop<OrderItem,
+        void,
+        { handlerId: Identifier | null }>({
+        accept: ORDER_TYPE,
+        collect(monitor) {
+            return {
+                handlerId: monitor.getHandlerId(),
+            }
+        },
+        hover(item: OrderItem, monitor) {
+            if (!ref.current || typeof item.index === 'undefined') {
+                return
+            }
+            const dragIndex = item.index
+            const hoverIndex = index
+
+            // Don't replace items with themselves
+            if (dragIndex === hoverIndex) {
+                return
+            }
+
+            // Determine rectangle on screen
+            const hoverBoundingRect = ref.current?.getBoundingClientRect()
+
+            // Get vertical middle
+            const hoverMiddleY =
+                (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+
+            // Determine mouse position
+            const clientOffset = monitor.getClientOffset()
+
+            // Get pixels to the top
+            const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top
+
+            // Only perform the move when the mouse has crossed half of the items height
+            // When dragging downwards, only move when the cursor is below 50%
+            // When dragging upwards, only move when the cursor is above 50%
+
+            // Dragging downwards
+            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+                return
+            }
+
+            // Dragging upwards
+            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+                return
+            }
+
+            // Time to actually perform the action
+            moveItems(dragIndex, hoverIndex)
+
+            // Note: we're mutating the monitor item here!
+            // Generally it's better to avoid mutations,
+            // but it's good here for the sake of performance
+            // to avoid expensive index searches.
+            item.index = hoverIndex
+        },
+    })
+
+    const [{isDragging}, drag] = useDrag({
+        type: ORDER_TYPE,
+        item: () => {
+            return {id, index}
+        },
+        collect: (monitor: any) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    })
+
+    const opacity = isDragging ? 0 : 1
+    drag(drop(ref))
+
+    return (
+        <div ref={ref} data-hanler-id={handlerId} style={{opacity}}>
+            {children}
+        </div>
+    )
+}
 
 const BurgerConstructor = () => {
     const orderState = useSelector<RootState>(state => state.order) as OrderState;
     const dispatch = useDispatch();
 
-    const topElement = orderState.items.find(element => element.ingredient.type === 'bun');
-    const elements = orderState.items.filter(element => element.ingredient.type !== 'bun');
-
-    // const total = useMemo(() => {
-    //     return elements.reduce((val, a) => a.ingredient.price + val, 0)
-    //         + (topElement ? topElement.ingredient?.price : 0) * 2;
-    // }, [orderState.items]);
+    const moveItems = useCallback((dragIndex: number, hoverIndex: number) => {
+        dispatch(swapOrderItems({from: dragIndex, to: hoverIndex}));
+    }, [dispatch])
 
     const onDelete = (item: OrderItem) => {
         dispatch(deleteOrderItem(item))
@@ -44,47 +130,47 @@ const BurgerConstructor = () => {
     return (
         <>
             <section className={constructorStyles.main}>
-                {topElement && (
+                {orderState.bunItem && (
                     <div className={constructorStyles.elementLineTop}>
                         <div className={constructorStyles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="top"
                             isLocked={true}
-                            text={topElement.ingredient.name + ' (верх)'}
-                            price={topElement.ingredient.price}
-                            thumbnail={topElement.ingredient.image}
+                            text={orderState.bunItem.ingredient.name + ' (верх)'}
+                            price={orderState.bunItem.ingredient.price}
+                            thumbnail={orderState.bunItem.ingredient.image}
                         />
                     </div>
                 )}
 
                 <div className={constructorStyles.centerElements}>
 
-                    {elements.map((element) => (
-                        <div className={constructorStyles.elementLineInner} key={element.id}>
-                            <div className={constructorStyles.dragBox}>
-                                <DragIcon type="primary"/>
+                    {orderState.items.map((element, index) => (
+                        <Draggable index={index} key={element.id} id={element.id} moveItems={moveItems}>
+                            <div className={constructorStyles.elementLineInner}>
+                                <div className={constructorStyles.dragBox}>
+                                    <DragIcon type="primary"/>
+                                </div>
+                                <ConstructorElement
+                                    text={element.ingredient.name}
+                                    price={element.ingredient.price}
+                                    handleClose={() => onDelete(element)}
+                                    thumbnail={element.ingredient.image}
+                                />
                             </div>
-                            <ConstructorElement
-                                key={element.id}
-                                text={element.ingredient.name}
-                                price={element.ingredient.price}
-                                handleClose={() => onDelete(element)}
-                                thumbnail={element.ingredient.image}
-                            />
-                        </div>
-
+                        </Draggable>
                     ))}
                 </div>
 
-                {topElement && (
+                {orderState.bunItem && (
                     <div className={constructorStyles.elementLineBottom}>
                         <div className={constructorStyles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
-                            text={topElement.ingredient.name + ' (низ)'}
-                            price={topElement.ingredient.price}
-                            thumbnail={topElement.ingredient.image}
+                            text={orderState.bunItem.ingredient.name + ' (низ)'}
+                            price={orderState.bunItem.ingredient.price}
+                            thumbnail={orderState.bunItem.ingredient.image}
                         />
                     </div>
                 )}
