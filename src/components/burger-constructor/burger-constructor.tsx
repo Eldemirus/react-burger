@@ -3,12 +3,10 @@ import constructorStyles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
 import OrderDetails from "../order-details/order-details";
-import {Order} from "../common/order";
 import Modal from "../modal/modal";
-import {sendOrder} from "../../utils/api";
 import {OrderItem} from "../common/order-item";
 import {useDispatch, useSelector} from "react-redux";
-import {clearOrderThunk, deleteItem, OrderState, setOrder, swapOrderItems} from "../../services/reducers/order";
+import {clearOrderThunk, deleteItem, OrderState, sendOrderThunk, swapOrderItems} from "../../services/reducers/order";
 import {RootState} from "../../services/store";
 import {useDrop} from "react-dnd";
 import {INGREDIENT_TYPE} from "../common/ingredient";
@@ -39,25 +37,20 @@ const BurgerConstructor = () => {
         dispatch(swapOrderItems({from: dragIndex, to: hoverIndex}));
     }, [dispatch])
 
-    const onDelete = (item: OrderItem) => {
+    const onDelete = useCallback((item: OrderItem) => {
         dispatch(deleteItem(item))
-    }
+    }, [dispatch])
 
     const total = useMemo(() => {
         return orderState.items.reduce((val, a) => a.ingredient.price + val, 0)
             + (orderState.bunItem ? orderState.bunItem.ingredient?.price : 0) * 2;
     }, [orderState]);
 
-    const onClick = () => {
-        const orderData = orderState.items.map(orderItem => orderItem.ingredient._id);
-        sendOrder(orderData)
-            .then(orderInfo => {
-                const newOrder: Order = {id: orderInfo.order.number, name: orderInfo.name};
-                dispatch(setOrder(newOrder));
-            })
+    const onClick = useCallback(() => {
+        dispatch(sendOrderThunk());
+    }, [dispatch])
 
-    }
-    const handleClose = React.useCallback(() => {
+    const handleClose = useCallback(() => {
         dispatch(clearOrderThunk());
     }, [dispatch])
 

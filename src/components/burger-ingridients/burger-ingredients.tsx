@@ -1,6 +1,6 @@
 import {Counter, Tab} from '@ya.praktikum/react-developer-burger-ui-components';
 import ingStyles from './burger-ingredients.module.css';
-import React, {useEffect, useMemo, useRef} from "react";
+import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import Price from "../common/price";
 import {Ingredient, INGREDIENT_TYPE} from "../common/ingredient";
 import IngredientDetails from "../ingredient-details/ingredient-details";
@@ -48,13 +48,13 @@ const BurgerIngredient: React.FC<{
         [ingredient],
     )
 
-    const showIngredientDetails = React.useCallback(() => {
+    const showIngredientDetails = useCallback(() => {
         dispatch(setIngredientInfo(ingredient));
     }, [dispatch, ingredient]);
 
-    const addItemHandler = () => {
+    const addItemHandler = useCallback(() => {
         dispatch(addItem(ingredient));
-    }
+    }, [dispatch, ingredient])
 
 
     return (
@@ -145,14 +145,14 @@ const BurgerIngredients: React.FC = () => {
     const scrollerRef = useRef<HTMLHeadingElement>(null);
 
 
-    const onTabClick = React.useCallback((val: string) => {
+    const onTabClick = useCallback((val: string) => {
         const element = document.getElementById(val);
         if (element) {
             element.scrollIntoView({behavior: "smooth"});
         }
     }, [])
 
-    const hideIngredientDetails = React.useCallback(() => {
+    const hideIngredientDetails = useCallback(() => {
         dispatch(clearIngredientInfo())
     }, [dispatch]);
 

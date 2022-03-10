@@ -4,6 +4,8 @@ import {Ingredient} from "../../components/common/ingredient";
 import {v4 as uuid} from "uuid";
 import {Order} from "../../components/common/order";
 import {clearIngredientAmount, decIngredientAmount, incIngredientAmount} from "./ingredients";
+import {sendOrder} from "../../utils/api";
+import {RootState} from "../store";
 
 export interface OrderState {
     items: OrderItem[];
@@ -80,5 +82,18 @@ export const clearOrderThunk = createAsyncThunk(
     async (_, {dispatch}) => {
         await dispatch(clearOrder())
         await dispatch(clearIngredientAmount())
+    }
+)
+
+export const sendOrderThunk = createAsyncThunk(
+    'order/sendOrder',
+    // Declare the type your function argument here:
+    async (_, {dispatch, getState }) => {
+        const { order } =  getState() as RootState;
+        const orderData = order.items.map(orderItem => orderItem.ingredient._id);
+
+        const orderInfo = await sendOrder(orderData);
+        const newOrder: Order = {id: orderInfo.order.number, name: orderInfo.name};
+        dispatch(setOrder(newOrder));
     }
 )
