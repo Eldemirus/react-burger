@@ -10,6 +10,8 @@ export interface Ingredient {
     image: string,
     image_mobile: string,
     image_large: string,
-    __v: number
+    __v: number,
+    amount: number,
 }
 
+export const INGREDIENT_TYPE = 'ingredients';
