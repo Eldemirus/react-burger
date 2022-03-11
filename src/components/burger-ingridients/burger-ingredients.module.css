@@ -18,6 +18,11 @@
     margin: auto;
 }
 
+.error {
+    composes: loading;
+    color: darkred;
+}
+
 .ingredientTypeList {
 }
 

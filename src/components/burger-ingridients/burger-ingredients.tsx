@@ -6,15 +6,11 @@ import {Ingredient, INGREDIENT_TYPE} from "../common/ingredient";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import Modal from "../modal/modal";
 import {useDispatch, useSelector} from "react-redux";
-import {addItem, BUN} from "../../services/reducers/order";
 import {RootState} from "../../services/store";
-import {
-    clearIngredientInfo,
-    IngredientsState,
-    loadIngredients,
-    setIngredientInfo
-} from "../../services/reducers/ingredients";
+import {IngredientsState, loadIngredients,} from "../../services/reducers/ingredients";
 import {DragSourceMonitor, useDrag} from "react-dnd";
+import {clearIngredientInfo, IngredientInfoState, setIngredientInfo} from "../../services/reducers/ingredients-info";
+import {addItem, BUN} from "../../services/reducers/cart";
 
 
 export interface BoxProps {
@@ -139,9 +135,12 @@ const BurgerIngredients: React.FC = () => {
 
     const {
         ingredients,
-        ingredientInfo,
-        ingredientsLoading
-    } = useSelector<RootState>(state => state.ingredients) as IngredientsState;
+        ingredientsLoading,
+        ingredientsFailed
+    } = useSelector<RootState, IngredientsState>(state => state.ingredients);
+    const {ingredientInfo} = useSelector<RootState, IngredientInfoState>(state => state.ingredientInfo);
+
+
     const scrollerRef = useRef<HTMLHeadingElement>(null);
 
 
@@ -190,12 +189,19 @@ const BurgerIngredients: React.FC = () => {
         <section className={ingStyles.main}>
             <h1 className="pt-10 pb-5 text text_type_main-large">Соберите бургер</h1>
             <IngredientTabs ingredientTypes={ingredientTypes} current={current} onTabClick={onTabClick}/>
-            {ingredientsLoading ?
+            {ingredientsLoading || ingredientsFailed ?
                 <div className={ingStyles.ingredientCardList}>
-                    <div className={ingStyles.loading}>
-                        Загрузка ингредиентов
-                    </div>
-                </div> :
+                    {ingredientsFailed ? (
+                        <div className={ingStyles.error}>
+                            Ошибка загрузки ингредиентов
+                        </div>
+                    ) : (
+                        <div className={ingStyles.loading}>
+                            Загрузка ингредиентов
+                        </div>
+                    )}
+                </div>
+                :
                 <div className={ingStyles.ingredientCardList} ref={scrollerRef}>
                     {ingredientTypes
                         .map((ingredientType) => (

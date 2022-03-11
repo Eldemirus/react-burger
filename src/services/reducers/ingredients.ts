@@ -1,17 +1,18 @@
 import {Ingredient} from "../../components/common/ingredient";
 import {createAsyncThunk, createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
-import {BUN} from "./order";
 import {getIngredients} from "../../utils/api";
+import {BUN} from "./cart";
 
 export interface IngredientsState {
     ingredients: Ingredient[];
-    ingredientInfo?: Ingredient;
     ingredientsLoading: boolean;
+    ingredientsFailed: boolean;
 }
 
-const initialState = {
+const initialState: IngredientsState = {
     ingredients: [],
     ingredientsLoading: false,
+    ingredientsFailed: false,
 
 }
 
@@ -19,17 +20,20 @@ export const ingredientSlice = createSlice({
     name: 'ingredients',
     initialState,
     reducers: {
+        getIngredientsStarted: (state: Draft<IngredientsState>) => {
+            state.ingredientsLoading = true;
+            state.ingredientsFailed = false;
+        },
+        getIngredientsFailed: (state: Draft<IngredientsState>) => {
+            state.ingredientsLoading = false;
+            state.ingredientsFailed = true;
+        },
+        getIngredientsSuccess: (state: Draft<IngredientsState>) => {
+            state.ingredientsLoading = false;
+            state.ingredientsFailed = false;
+        },
         setIngredients: (state: Draft<IngredientsState>, action: PayloadAction<Ingredient[]>) => {
             state.ingredients = action.payload;
-        },
-        setIngredientsLoading: (state: Draft<IngredientsState>, action: PayloadAction<boolean>) => {
-            state.ingredientsLoading = action.payload;
-        },
-        setIngredientInfo: (state: Draft<IngredientsState>, action: PayloadAction<Ingredient>) => {
-            state.ingredientInfo = action.payload;
-        },
-        clearIngredientInfo: (state: Draft<IngredientsState>) => {
-            state.ingredientInfo = undefined;
         },
         incIngredientAmount: (state: Draft<IngredientsState>, action: PayloadAction<string>) => {
             const ingredient = state.ingredients.find(ingredient => ingredient._id === action.payload);
@@ -57,23 +61,25 @@ export const ingredientSlice = createSlice({
 const {actions} = ingredientSlice;
 export const {
     setIngredients,
-    setIngredientInfo,
-    setIngredientsLoading,
-    clearIngredientInfo,
     incIngredientAmount,
     decIngredientAmount,
-    clearIngredientAmount
+    clearIngredientAmount,
+    getIngredientsFailed,
+    getIngredientsStarted,
+    getIngredientsSuccess
 } = actions;
 
 export const loadIngredients = createAsyncThunk(
     'ingredients/loadIngredients',
     // Declare the type your function argument here:
     async (_, {dispatch }) => {
-        await dispatch(setIngredientsLoading(true));
-        const data = await getIngredients();
-        await dispatch(setIngredientsLoading(false));
-        await dispatch(setIngredients(data));
-
-
+        dispatch(getIngredientsStarted());
+        getIngredients().then(data => {
+            dispatch(getIngredientsSuccess());
+            dispatch(setIngredients(data));
+        }).catch(error => {
+            console.log('error', error);
+            dispatch(getIngredientsFailed());
+        })
     }
 )
