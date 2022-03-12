@@ -1,37 +1,25 @@
-import React, {useReducer, useState} from 'react';
+import React from 'react';
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingridients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import {Ingredient} from "../common/ingredient";
 import ErrorBoundary from "../error-boundary/error-boundary";
 import "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
 import appStyles from './app.module.css';
-import {getIngredients} from "../../utils/api";
-import {initialOrderState, OrderAction, OrderContext, orderReducerFun, OrderState} from '../../utils/order-context';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 function App() {
-    const [data, setData] = useState<Array<Ingredient>>([]);
-
-    const [orderState, orderDispatch] =
-        useReducer<React.Reducer<OrderState,OrderAction>, OrderState>(orderReducerFun, initialOrderState, ()=>initialOrderState);
-
-    React.useEffect(() => {
-        getIngredients()
-            .then(setData)
-            .catch(error => console.error('ошибка загрузки ингредиентов', error));
-    }, []);
 
     return (
         <>
             <ErrorBoundary>
                 <AppHeader/>
-                <main className={appStyles.main}>
-                        <OrderContext.Provider value={{orderState, orderDispatch}}>
-
-                            <BurgerIngredients ingredients={data}/>
-                            <BurgerConstructor />
-                        </OrderContext.Provider>
-                </main>
+                <DndProvider backend={HTML5Backend}>
+                    <main className={appStyles.main}>
+                        <BurgerIngredients/>
+                        <BurgerConstructor/>
+                    </main>
+                </DndProvider>
             </ErrorBoundary>
         </>
     );

@@ -1,103 +1,130 @@
-import React, {useContext} from "react";
+import React, {useCallback, useMemo} from "react";
 import constructorStyles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
 import OrderDetails from "../order-details/order-details";
-import {Order} from "../common/order";
 import Modal from "../modal/modal";
-import {OrderActionKind, OrderContext} from "../../utils/order-context";
-import {sendOrder} from "../../utils/api";
 import {OrderItem} from "../common/order-item";
-
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../services/store";
+import {useDrop} from "react-dnd";
+import {INGREDIENT_TYPE} from "../common/ingredient";
+import {Draggable} from "./draggable";
+import {CartState, deleteItem, swapOrderItems} from "../../services/reducers/cart";
+import {clearOrderThunk, OrderState, sendOrderThunk} from "../../services/reducers/order";
 
 const BurgerConstructor = () => {
-    const [order, setOrder] = React.useState<Order>();
-    const {orderState, orderDispatch} = useContext(OrderContext);
+    const cartState = useSelector<RootState,CartState>(state => state.cart);
+    const orderState = useSelector<RootState,OrderState>(state => state.order);
+    const dispatch = useDispatch();
 
-    const topElement = orderState.items.find(element => element.ingredient.type === 'bun');
-    const elements = orderState.items.filter(element => element.ingredient.type !== 'bun');
+    const [{ canDrop, isOver }, drop] = useDrop(
+        () => ({
+            accept: INGREDIENT_TYPE,
+            drop: () => ({
+                name: `Dustbin`,
+            }),
+            collect: (monitor: any) => ({
+                isOver: monitor.isOver(),
+                canDrop: monitor.canDrop(),
+            }),
+        }),
+        [],
+    )
 
-    // const total = useMemo(() => {
-    //     return elements.reduce((val, a) => a.ingredient.price + val, 0)
-    //         + (topElement ? topElement.ingredient?.price : 0) * 2;
-    // }, [orderState.items]);
+    const isActive = canDrop && isOver
+    const border = isActive ? '1px dashed green' : 'none';
 
-    const onDelete = (item: OrderItem) => {
-        orderDispatch({type: OrderActionKind.REMOVE, payload: item.id})
-    }
+    const moveItems = useCallback((dragIndex: number, hoverIndex: number) => {
+        dispatch(swapOrderItems({from: dragIndex, to: hoverIndex}));
+    }, [dispatch])
 
-    const onClick = () => {
-        const orderData = orderState.items.map(orderItem => orderItem.ingredient._id);
-        sendOrder(orderData)
-            .then(orderInfo => {
-                const newOrder: Order = {id: orderInfo.order.number, name: orderInfo.name};
-                setOrder(newOrder);
-            })
+    const onDelete = useCallback((item: OrderItem) => {
+        dispatch(deleteItem(item))
+    }, [dispatch])
 
-    }
-    const handleClose = React.useCallback(() => {
-        setOrder(undefined);
-        orderDispatch({type: OrderActionKind.CLEAR})
-    }, [orderDispatch])
+    const total = useMemo(() => {
+        return cartState.items.reduce((val, a) => a.ingredient.price + val, 0)
+            + (cartState.bunItem ? cartState.bunItem.ingredient?.price : 0) * 2;
+    }, [cartState]);
+
+    const onClick = useCallback(() => {
+        dispatch(sendOrderThunk());
+    }, [dispatch])
+
+    const handleClose = useCallback(() => {
+        dispatch(clearOrderThunk());
+    }, [dispatch])
 
     return (
         <>
-            <section className={constructorStyles.main}>
-                {topElement && (
+            <section className={constructorStyles.main} ref={drop} style={{border}}>
+                {!cartState.bunItem && !cartState.items.length && (
+                    <div className={constructorStyles.emptyList}>
+                        Перетащите ингредиенты для добавления в заказ
+                    </div>
+                )}
+
+                {cartState.bunItem && (
                     <div className={constructorStyles.elementLineTop}>
                         <div className={constructorStyles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="top"
                             isLocked={true}
-                            text={topElement.ingredient.name + ' (верх)'}
-                            price={topElement.ingredient.price}
-                            thumbnail={topElement.ingredient.image}
+                            text={cartState.bunItem.ingredient.name + ' (верх)'}
+                            price={cartState.bunItem.ingredient.price}
+                            thumbnail={cartState.bunItem.ingredient.image}
                         />
                     </div>
                 )}
 
                 <div className={constructorStyles.centerElements}>
 
-                    {elements.map((element) => (
-                        <div className={constructorStyles.elementLineInner} key={element.id}>
-                            <div className={constructorStyles.dragBox}>
-                                <DragIcon type="primary"/>
+                    {cartState.items.map((element, index) => (
+                        <Draggable index={index} key={element.id} id={element.id} moveItems={moveItems}>
+                            <div className={constructorStyles.elementLineInner}>
+                                <div className={constructorStyles.dragBox}>
+                                    <DragIcon type="primary"/>
+                                </div>
+                                <ConstructorElement
+                                    text={element.ingredient.name}
+                                    price={element.ingredient.price}
+                                    handleClose={() => onDelete(element)}
+                                    thumbnail={element.ingredient.image}
+                                />
                             </div>
-                            <ConstructorElement
-                                key={element.id}
-                                text={element.ingredient.name}
-                                price={element.ingredient.price}
-                                handleClose={() => onDelete(element)}
-                                thumbnail={element.ingredient.image}
-                            />
-                        </div>
-
+                        </Draggable>
                     ))}
                 </div>
 
-                {topElement && (
+                {cartState.bunItem && (
                     <div className={constructorStyles.elementLineBottom}>
                         <div className={constructorStyles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
-                            text={topElement.ingredient.name + ' (низ)'}
-                            price={topElement.ingredient.price}
-                            thumbnail={topElement.ingredient.image}
+                            text={cartState.bunItem.ingredient.name + ' (низ)'}
+                            price={cartState.bunItem.ingredient.price}
+                            thumbnail={cartState.bunItem.ingredient.image}
                         />
                     </div>
                 )}
                 {
-                    orderState.total > 0 &&
+                    total > 0 &&
                     <div className={constructorStyles.totalLine}>
-                        <Price value={orderState.total} size={'medium'}/>
-                        <Button type="primary" onClick={onClick}>Оформить заказ</Button>
+                        <Price value={total} size={'medium'}/>
+                        <Button type="primary" onClick={onClick} disabled={orderState.orderSending}>Оформить заказ</Button>
                     </div>
                 }
+                {orderState.orderFailed && (
+                    <div className={constructorStyles.errorMessage}>
+                        Ошибка обработки заказа
+                    </div>
+                )}
             </section>
-            {order && (
+            {orderState.order && (
                 <Modal handleClose={handleClose}>
-                    <OrderDetails order={order}/>
+                    <OrderDetails order={orderState.order}/>
                 </Modal>
             )}
         </>
