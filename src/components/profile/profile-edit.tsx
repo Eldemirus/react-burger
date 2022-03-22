@@ -1,5 +1,5 @@
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../services/store";
 import {AuthState} from "../../services/reducers/auth";
@@ -34,6 +34,9 @@ export const ProfileEdit = () => {
         setPassword('');
     }
 
+    const formChanged = useMemo(() => {
+        return (email !== user?.email) || (name !== user.name) || (password !== '')
+    }, [email, name, password, user])
 
     return (
         <div className=''>
@@ -59,10 +62,12 @@ export const ProfileEdit = () => {
                 />
                 {savingUserSuccess && <div>Успешно сохранено</div>}
                 {savingUserFailed && <div>Ошибка сохранения</div>}
-                <div className={styles.buttonLine}>
-                    <Button type={'primary'} disabled={savingUserStarted} onClick={onSaveClick}>Сохранить</Button>
-                    <Button type={'secondary'} disabled={savingUserStarted} onClick={onCancelClick}>Отменить</Button>
-                </div>
+                {formChanged &&
+                    <div className={styles.buttonLine}>
+                        <Button type={'primary'} disabled={savingUserStarted} onClick={onSaveClick}>Сохранить</Button>
+                        <Button type={'secondary'} disabled={savingUserStarted} onClick={onCancelClick}>Отменить</Button>
+                    </div>
+                }
 
 
             </div>
