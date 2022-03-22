@@ -1,50 +1,60 @@
 import {BurgerIcon, ListIcon, Logo, ProfileIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import headerStyles from './app-header.module.css';
+import styles from './app-header.module.css';
+import {Link, NavLink, useMatch} from "react-router-dom";
+import {FC} from "react";
 
 
 interface NavigationLinkProps {
     title: string;
-    enabled?: boolean;
-    url?: string;
+    url: string;
 }
 
-const NavigationLink: React.FC<NavigationLinkProps> = ({title, enabled = true, children}) => {
+const NavigationLink: FC<NavigationLinkProps> = ({title, url, children}) => {
     return (
-        <a className={headerStyles.navItem}>
+        <NavLink to={url} className={({isActive}) => isActive ? styles.navItemActive : styles.navItem}>
             {children}
-            <span className={"pl-4 text text_type_main-default " + (!enabled && "text_color_inactive")}>{title}</span>
-        </a>
+            <span className={styles.linkText}>{title}</span>
+        </NavLink>
     )
 }
 
-function NavigaionBar() {
+const NavigationBar = () => {
     return (
-        <div className={headerStyles.navBar}>
-            <NavigationLink title="Конструктор" url="">
-                <BurgerIcon type="primary"/>
+        <div className={styles.navBar}>
+            <NavigationLink title="Конструктор" url="/">
+                <BurgerIcon type="secondary"/>
             </NavigationLink>
-            <NavigationLink title="Лента заказов" url="" enabled={false}>
+            <NavigationLink title="Лента заказов" url="/feed">
                 <ListIcon type="secondary"/>
             </NavigationLink>
         </div>
     )
 }
 
+const ProfileLink = () => {
+
+    let match = useMatch("/profile/*");
+    return (
+        <Link className={ match ? styles.navItemActive : styles.navItem} to={'/profile/'}>
+            <ProfileIcon type="secondary"/>
+            <span className={styles.linkText}>Личный кабинет</span>
+        </Link>
+    );
+}
+
 
 function AppHeader() {
     return (
-        <header className={headerStyles.header}>
-            <div className={headerStyles.headerContainer}>
-                <div className={headerStyles.headerItemFirst}>
-                    <NavigaionBar/>
+        <header className={styles.header}>
+            <div className={styles.headerContainer}>
+                <div className={styles.headerItemFirst}>
+                    <NavigationBar/>
                 </div>
-                <div className={headerStyles.headerItem}>
+                <div className={styles.headerItem}>
                     <Logo/>
                 </div>
-                <div className={headerStyles.headerItemLast}>
-                    <NavigationLink title="Личный кабинет">
-                        <ProfileIcon type="primary"/>
-                    </NavigationLink>
+                <div className={styles.headerItemLast}>
+                    <ProfileLink />
                 </div>
             </div>
         </header>

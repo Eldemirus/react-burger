@@ -1,25 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import AppHeader from "../app-header/app-header";
-import BurgerIngredients from "../burger-ingridients/burger-ingredients";
-import BurgerConstructor from "../burger-constructor/burger-constructor";
 import ErrorBoundary from "../error-boundary/error-boundary";
 import "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
-import appStyles from './app.module.css';
-import {DndProvider} from 'react-dnd';
-import {HTML5Backend} from "react-dnd-html5-backend";
+import {Outlet} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {loadIngredients} from "../../services/reducers/ingredients";
+import {AuthState, getUserThunk} from "../../services/reducers/auth";
+import {RootState} from "../../services/store";
+import styles from "../page-not-found/page-not-found.module.css";
 
 function App() {
 
+    const dispatch = useDispatch();
+    const {checkingUser} = useSelector<RootState, AuthState>(state => state.auth);
+
+    useEffect(() => {
+        dispatch(loadIngredients());
+        dispatch(getUserThunk())
+    }, [dispatch])
+
     return (
         <>
+            <AppHeader/>
             <ErrorBoundary>
-                <AppHeader/>
-                <DndProvider backend={HTML5Backend}>
-                    <main className={appStyles.main}>
-                        <BurgerIngredients/>
-                        <BurgerConstructor/>
-                    </main>
-                </DndProvider>
+                {checkingUser ? (
+                    <div className={styles.errorText}>
+                        Загрузка пользователя
+                    </div>
+                    ) : (
+                        <Outlet/>
+                    )
+                }
             </ErrorBoundary>
         </>
     );

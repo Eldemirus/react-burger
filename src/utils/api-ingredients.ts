@@ -1,12 +1,5 @@
 import {URL} from "./parameters";
-
-const checkAnswer = (response: Response) => {
-    if (response.ok) {
-        return response.json()
-    } else {
-        response.json().then((error) => Promise.reject(error));
-    }
-}
+import {checkAnswer} from "./api-common";
 
 export const getIngredients = () => {
     return fetch(`${URL}/ingredients`)

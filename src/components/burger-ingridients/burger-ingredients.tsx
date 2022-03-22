@@ -3,14 +3,12 @@ import ingStyles from './burger-ingredients.module.css';
 import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import Price from "../common/price";
 import {Ingredient, INGREDIENT_TYPE} from "../common/ingredient";
-import IngredientDetails from "../ingredient-details/ingredient-details";
-import Modal from "../modal/modal";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../services/store";
-import {IngredientsState, loadIngredients,} from "../../services/reducers/ingredients";
+import {IngredientsState,} from "../../services/reducers/ingredients";
 import {DragSourceMonitor, useDrag} from "react-dnd";
-import {clearIngredientInfo, IngredientInfoState, setIngredientInfo} from "../../services/reducers/ingredients-info";
 import {addItem, BUN} from "../../services/reducers/cart";
+import {useNavigate} from "react-router-dom";
 
 
 export interface BoxProps {
@@ -27,6 +25,7 @@ const BurgerIngredient: React.FC<{
     ingredient: Ingredient;
 }> = ({ingredient}) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [{opacity}, drag] = useDrag(
         () => ({
             type: INGREDIENT_TYPE,
@@ -45,8 +44,8 @@ const BurgerIngredient: React.FC<{
     )
 
     const showIngredientDetails = useCallback(() => {
-        dispatch(setIngredientInfo(ingredient));
-    }, [dispatch, ingredient]);
+        navigate(`/ingredient/${ingredient._id}`, {state: {showPopup: true}});
+    }, [ingredient, navigate]);
 
     const addItemHandler = useCallback(() => {
         dispatch(addItem(ingredient));
@@ -128,21 +127,13 @@ const IngredientTabs: React.FC<{
 
 const BurgerIngredients: React.FC = () => {
     const [current, setCurrent] = React.useState(BUN)
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(loadIngredients());
-    }, [dispatch])
-
     const {
         ingredients,
         ingredientsLoading,
         ingredientsFailed
     } = useSelector<RootState, IngredientsState>(state => state.ingredients);
-    const {ingredientInfo} = useSelector<RootState, IngredientInfoState>(state => state.ingredientInfo);
-
 
     const scrollerRef = useRef<HTMLHeadingElement>(null);
-
 
     const onTabClick = useCallback((val: string) => {
         const element = document.getElementById(val);
@@ -150,10 +141,6 @@ const BurgerIngredients: React.FC = () => {
             element.scrollIntoView({behavior: "smooth"});
         }
     }, [])
-
-    const hideIngredientDetails = useCallback(() => {
-        dispatch(clearIngredientInfo())
-    }, [dispatch]);
 
     const ingredientsByType = useMemo(() => {
         return ingredientTypes.reduce((counts: any, type) => {
@@ -214,11 +201,6 @@ const BurgerIngredients: React.FC = () => {
                             </BurgerIngredientGroup>
                         ))}
                 </div>
-            }
-            {ingredientInfo &&
-                <Modal handleClose={hideIngredientDetails} title={'Детали ингредиента'}>
-                    <IngredientDetails ingredient={ingredientInfo}/>
-                </Modal>
             }
         </section>
     )

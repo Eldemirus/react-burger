@@ -12,11 +12,17 @@ import {INGREDIENT_TYPE} from "../common/ingredient";
 import {Draggable} from "./draggable";
 import {CartState, deleteItem, swapOrderItems} from "../../services/reducers/cart";
 import {clearOrderThunk, OrderState, sendOrderThunk} from "../../services/reducers/order";
+import {AuthState} from "../../services/reducers/auth";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const BurgerConstructor = () => {
     const cartState = useSelector<RootState,CartState>(state => state.cart);
     const orderState = useSelector<RootState,OrderState>(state => state.order);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const {user} = useSelector<RootState, AuthState>(state => state.auth);
+    let location = useLocation();
+
 
     const [{ canDrop, isOver }, drop] = useDrop(
         () => ({
@@ -49,8 +55,12 @@ const BurgerConstructor = () => {
     }, [cartState]);
 
     const onClick = useCallback(() => {
-        dispatch(sendOrderThunk());
-    }, [dispatch])
+        if (user) {
+            dispatch(sendOrderThunk());
+        } else {
+            navigate('/login', {state: {from: location}})
+        }
+    }, [dispatch, user, location, navigate])
 
     const handleClose = useCallback(() => {
         dispatch(clearOrderThunk());

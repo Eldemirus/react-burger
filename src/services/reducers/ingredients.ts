@@ -1,6 +1,6 @@
 import {Ingredient} from "../../components/common/ingredient";
 import {createAsyncThunk, createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
-import {getIngredients} from "../../utils/api";
+import {getIngredients} from "../../utils/api-ingredients";
 import {BUN} from "./cart";
 
 export interface IngredientsState {
