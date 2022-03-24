@@ -17,7 +17,8 @@ export const Login = () => {
     let from = state?.from?.pathname || "/";
     console.log('FROM', from, state);
 
-    const onClick = useCallback(() => {
+    const onSubmit = useCallback((event) => {
+        event.preventDefault();
         dispatch(loginUserThunk({email, password}));
     }, [email, password, dispatch]);
 
@@ -29,7 +30,7 @@ export const Login = () => {
     return (
         <div className='centered-container'>
 
-            <div className='formContainer'>
+            <form className='formContainer' onSubmit={onSubmit}>
                 <h1 className={'text text_type_main-medium'}>Вход</h1>
                 <Input
                     type={'email'}
@@ -44,7 +45,7 @@ export const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 {loginFailed && <div>Неверный логин или пароль</div>}
-                <Button type={'primary'} disabled={loginStarted} onClick={onClick}>Войти</Button>
+                <Button type={'primary'} disabled={loginStarted} htmlType='submit'>Войти</Button>
 
                 <div className='formFooter'>
                     <nav className='text text_type_main-default mt-20 mb-4'>
@@ -55,7 +56,7 @@ export const Login = () => {
                         Забыли пароль?&nbsp;
                         <Link className='navLink' to={'/forgot-password'}>Восстановить пароль</Link></nav>
                 </div>
-            </div>
+            </form>
         </div>
     )
 }

@@ -17,7 +17,8 @@ export const ResetPassword = () => {
         passwordSaveSuccess
     } = useSelector<RootState, RestorePasswordState>(state => state.restorePassword);
     const dispatch = useDispatch();
-    const onClick = useCallback(() => {
+    const onSubmit = useCallback((event) => {
+        event.preventDefault();
         dispatch(passwordSaveThunk({code, password}))
     }, [password, code, dispatch]);
 
@@ -36,7 +37,7 @@ export const ResetPassword = () => {
     return (
         <div className='centered-container'>
 
-            <div className='formContainer'>
+            <form className='formContainer' onSubmit={onSubmit}>
                 <h1 className={'text text_type_main-medium'}>Восстановление пароля</h1>
                 <Input
                     type={'text'}
@@ -53,7 +54,7 @@ export const ResetPassword = () => {
                 {passwordSaveFailed && <div>Ошибка сохранения пароля</div>}
                 {passwordSaveSuccess && <div>Пароль успешно изменен</div>}
 
-                <Button type={'primary'} disabled={passwordSaveStarted} onClick={onClick}>Сохранить</Button>
+                <Button type={'primary'} disabled={passwordSaveStarted} htmlType='submit'>Сохранить</Button>
 
                 <div className='formFooter'>
                     <nav className='text text_type_main-default mt-20 mb-4'>
@@ -61,7 +62,7 @@ export const ResetPassword = () => {
                         <Link className='navLink' to={'/login'}>Войти</Link>
                     </nav>
                 </div>
-            </div>
+            </form>
         </div>
     )
 }

@@ -15,7 +15,8 @@ export const ForgotPassword = () => {
     const dispatch = useDispatch();
 
 
-    const onClick = useCallback(() => {
+    const onSubmit = useCallback((event) => {
+        event.preventDefault();
         dispatch(passwordEmailThunk({email}))
    }, [email, dispatch]);
 
@@ -28,7 +29,7 @@ export const ForgotPassword = () => {
     return (
         <div className='centered-container'>
 
-            <div className='formContainer'>
+            <form className='formContainer' onSubmit={onSubmit}>
                 <h1 className={'text text_type_main-medium'}>Восстановление пароля</h1>
                 <Input
                     type={'email'}
@@ -37,7 +38,7 @@ export const ForgotPassword = () => {
                     placeholder='E-mail'
                 />
                 {codeSentFailed && <div>Ошибка сохранения</div>}
-                <Button type={'primary'} disabled={codeSentStarted} onClick={onClick}>Восстановить</Button>
+                <Button type={'primary'} disabled={codeSentStarted} htmlType='submit'>Восстановить</Button>
 
                 <div className='formFooter'>
                     <nav className='text text_type_main-default mt-20 mb-4'>
@@ -45,7 +46,7 @@ export const ForgotPassword = () => {
                         <Link className='navLink' to={'/login'}>Войти</Link>
                     </nav>
                 </div>
-            </div>
+            </form>
         </div>
     )
 }

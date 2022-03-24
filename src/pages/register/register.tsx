@@ -10,7 +10,8 @@ export const Register = () => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
 
-    const onClick = useCallback(() => {
+    const onSubmit = useCallback((event) => {
+        event.preventDefault();
         registerUser(email, password, name)
             .then(message => {
                 console.log('registered', message);
@@ -20,7 +21,7 @@ export const Register = () => {
     return (
         <div className='centered-container'>
 
-            <div className='formContainer'>
+            <form className='formContainer' onSubmit={onSubmit}>
                 <h1 className={'text text_type_main-medium'}>Регистрация</h1>
                 <Input
                     type={'text'}
@@ -40,7 +41,7 @@ export const Register = () => {
                     size={'default'}
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button type={'primary'} onClick={onClick}>Зарегистрироваться</Button>
+                <Button type={'primary'} htmlType='submit'>Зарегистрироваться</Button>
 
                 <div className='formFooter'>
                     <nav className='text text_type_main-default mt-20 mb-4'>
@@ -48,7 +49,7 @@ export const Register = () => {
                         <Link className='navLink' to={'/login'}>Войти</Link>
                     </nav>
                 </div>
-            </div>
+            </form>
         </div>
     )
 }
