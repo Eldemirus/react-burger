@@ -1,16 +1,10 @@
 import {URL} from "./parameters";
-import {checkAnswer} from "./api-common";
+import {checkAnswer, checkSuccess} from "./api-common";
 
 export const getIngredients = () => {
     return fetch(`${URL}/ingredients`)
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer.data
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const sendOrder = (items: string[]) => {
@@ -23,12 +17,6 @@ export const sendOrder = (items: string[]) => {
         body: JSON.stringify(body)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer;
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 

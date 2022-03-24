@@ -74,9 +74,9 @@ export const loadIngredients = createAsyncThunk(
     // Declare the type your function argument here:
     async (_, {dispatch }) => {
         dispatch(getIngredientsStarted());
-        getIngredients().then(data => {
+        getIngredients().then(result => {
             dispatch(getIngredientsSuccess());
-            dispatch(setIngredients(data));
+            dispatch(setIngredients(result.data));
         }).catch(error => {
             console.log('error', error);
             dispatch(getIngredientsFailed());

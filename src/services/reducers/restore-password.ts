@@ -92,8 +92,7 @@ export const passwordSaveThunk = createAsyncThunk(
     async ({code, password}: { password: string, code: string }, {dispatch,}) => {
         dispatch(setSavePasswordStart());
         passwordResetConfirmation(password, code)
-            .then(result => {
-                console.log('SAVE PASSWORD', result)
+            .then(_ => {
                 dispatch(setSavePasswordSuccess());
             })
             .catch(error => {

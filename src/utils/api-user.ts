@@ -1,5 +1,5 @@
 import {URL} from "./parameters";
-import {checkAnswer} from "./api-common";
+import {checkAnswer, checkSuccess} from "./api-common";
 import {User} from "../services/reducers/auth";
 
 export const passwordReset = (email: string) => {
@@ -12,13 +12,7 @@ export const passwordReset = (email: string) => {
         body: JSON.stringify(body)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer.message
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const passwordResetConfirmation = (password: string, token: string) => {
@@ -31,13 +25,7 @@ export const passwordResetConfirmation = (password: string, token: string) => {
         body: JSON.stringify(body)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const registerUser = (email: string, password: string, name: string) => {
@@ -50,13 +38,7 @@ export const registerUser = (email: string, password: string, name: string) => {
         body: JSON.stringify(body)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const loginUser = (email: string, password: string) => {
@@ -69,13 +51,7 @@ export const loginUser = (email: string, password: string) => {
         body: JSON.stringify(body)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const logoutUser = (token: string) => {
@@ -88,13 +64,7 @@ export const logoutUser = (token: string) => {
         body: JSON.stringify(body)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer.message;
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const getAccessToken = (token: string) => {
@@ -107,13 +77,7 @@ export const getAccessToken = (token: string) => {
         body: JSON.stringify(body)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer;
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const getUserInfo = (token: string) => {
@@ -125,13 +89,7 @@ export const getUserInfo = (token: string) => {
         },
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer
-            } else {
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 
 export const saveUserInfo = (user: User, token: string) => {
@@ -144,13 +102,6 @@ export const saveUserInfo = (user: User, token: string) => {
         body: JSON.stringify(user)
     })
         .then(checkAnswer)
-        .then(answer => {
-            if (answer?.success) {
-                return answer
-            } else {
-                console.log('REJECT', answer)
-                return Promise.reject(answer);
-            }
-        });
+        .then(checkSuccess);
 }
 

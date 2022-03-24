@@ -15,7 +15,6 @@ export const Login = () => {
     const {loginFailed, loginStarted, loginSuccess} = useSelector<RootState, AuthState>(state => state.auth);
 
     let from = state?.from?.pathname || "/";
-    console.log('FROM', from, state);
 
     const onSubmit = useCallback((event) => {
         event.preventDefault();

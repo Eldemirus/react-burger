@@ -1,12 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { rootReducer } from './reducers';
-import {jwt, logger} from "./middleware/jwt";
+import {configureStore} from '@reduxjs/toolkit'
+import {rootReducer} from './reducers';
+import {jwt} from "./middleware/jwt";
 
 const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
-    }).concat(jwt, logger),
+    }).concat(jwt),
     devTools: process.env.NODE_ENV !== 'production',
 })
 

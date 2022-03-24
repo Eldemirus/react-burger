@@ -8,3 +8,10 @@ export const checkAnswer = (response: Response) => {
     }
 }
 
+export const checkSuccess = (answer: any) => {
+    if (answer?.success) {
+        return answer
+    } else {
+        return Promise.reject(answer);
+    }
+}

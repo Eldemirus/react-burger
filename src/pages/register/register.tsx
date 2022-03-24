@@ -13,8 +13,8 @@ export const Register = () => {
     const onSubmit = useCallback((event) => {
         event.preventDefault();
         registerUser(email, password, name)
-            .then(message => {
-                console.log('registered', message);
+            .then(result => {
+                console.log('registered', result);
             })
             .catch(error => console.log('error', error));
     }, [email, password, name]);

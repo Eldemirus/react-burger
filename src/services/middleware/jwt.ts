@@ -53,7 +53,6 @@ export async function refreshToken(dispatch: Dispatch<AnyAction>) {
 }
 export const jwt: Middleware<{}, RootState> = store => next => async action => {
     // only worry about expiring token for async actions
-    console.log('MIDDLE CHECK', action.type)
     if (action.type.match(/user\/updateUser/)) {
         const token: string = store.getState().auth?.token ?? '';
         if (token) {
