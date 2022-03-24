@@ -1,6 +1,10 @@
 import React from "react";
-import {Ingredient} from "../common/ingredient";
 import styles from "./ingredient-details.module.css";
+import {useSelector} from "react-redux";
+import {RootState} from "../../services/store";
+import {IngredientsState} from "../../services/reducers/ingredients";
+import {useLocation, useMatch} from "react-router-dom";
+import {PageNotFound} from "../page-not-found/page-not-found";
 
 interface IngredientInfoProps {
     title: string;
@@ -16,15 +20,30 @@ const IngredientInfo: React.FC<IngredientInfoProps> = ({title, amount}) => {
     )
 }
 
-interface IngredientDetailsProps {
-    ingredient: Ingredient;
-}
 
-const IngredientDetails: React.FC<IngredientDetailsProps> = ({ingredient}) => {
+const IngredientDetails: React.FC = () => {
+    const {ingredients} = useSelector<RootState, IngredientsState>(state => state.ingredients);
+    const match = useMatch('/ingredient/:id');
+    const location = useLocation();
+    const state = location.state as {background: Location}
+
+
+    let ingredient;
+    if (match) {
+        ingredient = ingredients.find(ingredient => ingredient._id === match.params.id);
+    }
+
+    if (!ingredient) {
+        return <PageNotFound />;
+    }
 
     return (
         <div className={styles.container}>
-            <img src={ingredient.image_large} alt={ingredient.name} className={styles.mainImage}/>
+            {!state?.background &&
+                <div className={'text text_type_main-large'}>Детали ингредиента</div>
+            }
+
+            <img src={ingredient.image_large} alt={ingredient.name} />
             <div className={styles.ingredientTitle}>{ingredient.name}</div>
             <div className={styles.infoLine}>
                 <IngredientInfo title={'Калории,ккал'} amount={ingredient.calories}/>

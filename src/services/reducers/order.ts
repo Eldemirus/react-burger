@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
-import {Order} from "../../components/common/order";
+import {Order} from "../../pages/common/order";
 import {clearIngredientAmount} from "./ingredients";
 import {sendOrder} from "../../utils/api-ingredients";
 import {RootState} from "../store";
@@ -69,6 +69,8 @@ export const sendOrderThunk = createAsyncThunk(
         if (cart.bunItem?.ingredient._id) {
             orderData.push(cart.bunItem?.ingredient._id);
         }
+        setTimeout(() => {
+
         sendOrder(orderData)
             .then(orderInfo => {
                 const newOrder: Order = {id: orderInfo.order.number, name: orderInfo.name};
@@ -79,6 +81,7 @@ export const sendOrderThunk = createAsyncThunk(
                 console.log('error', error);
                 dispatch(sendOrderFailed());
             })
+        }, 2000);
 
     }
 )

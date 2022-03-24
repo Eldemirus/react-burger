@@ -1,9 +1,0 @@
-.detailsContainer {
-    composes: pt-30 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: calc(100vh - 200px);
-    justify-content: flex-start;
-    align-items: center;
-}

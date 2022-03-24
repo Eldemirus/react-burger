@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
-import {OrderItem} from "../../components/common/order-item";
-import {Ingredient} from "../../components/common/ingredient";
+import {OrderItem} from "../../pages/common/order-item";
+import {Ingredient} from "../../pages/common/ingredient";
 import {v4 as uuid} from "uuid";
 import {clearIngredientAmount, decIngredientAmount, incIngredientAmount} from "./ingredients";
 

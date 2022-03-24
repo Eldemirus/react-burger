@@ -35,7 +35,7 @@ const ProfileLink = () => {
 
     let match = useMatch("/profile/*");
     return (
-        <Link className={ match ? styles.navItemActive : styles.navItem} to={'/profile/'}>
+        <Link className={match ? styles.navItemActive : styles.navItem} to={'/profile/'}>
             <ProfileIcon type="secondary"/>
             <span className={styles.linkText}>Личный кабинет</span>
         </Link>
@@ -51,10 +51,12 @@ function AppHeader() {
                     <NavigationBar/>
                 </div>
                 <div className={styles.headerItem}>
-                    <Logo/>
+                    <Link to={'/'}>
+                        <Logo/>
+                    </Link>
                 </div>
                 <div className={styles.headerItemLast}>
-                    <ProfileLink />
+                    <ProfileLink/>
                 </div>
             </div>
         </header>

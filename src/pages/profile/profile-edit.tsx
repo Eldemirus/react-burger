@@ -24,7 +24,8 @@ export const ProfileEdit = () => {
         setName(user?.name ?? '');
     }, [user])
 
-    const onSaveClick = useCallback(() => {
+    const onSaveClick = useCallback((event) => {
+        event.preventDefault();
         dispatch(updateUserThunk({email, name, password}))
     }, [dispatch, email, password, name]);
 
@@ -40,8 +41,7 @@ export const ProfileEdit = () => {
 
     return (
         <div className=''>
-
-            <div className='formContainer'>
+            <form onSubmit={onSaveClick} className='formContainer'>
                 <Input
                     type={'text'}
                     value={name}
@@ -62,15 +62,17 @@ export const ProfileEdit = () => {
                 />
                 {savingUserSuccess && <div>Успешно сохранено</div>}
                 {savingUserFailed && <div>Ошибка сохранения</div>}
+
                 {formChanged &&
                     <div className={styles.buttonLine}>
-                        <Button type={'primary'} disabled={savingUserStarted} onClick={onSaveClick}>Сохранить</Button>
-                        <Button type={'secondary'} disabled={savingUserStarted} onClick={onCancelClick}>Отменить</Button>
+                        <Button type={'primary'} htmlType={'submit'} disabled={savingUserStarted}>Сохранить</Button>
+                        <Button type={'secondary'} disabled={savingUserStarted}
+                                onClick={onCancelClick}>Отменить</Button>
                     </div>
                 }
 
 
-            </div>
+            </form>
         </div>
     )
 }

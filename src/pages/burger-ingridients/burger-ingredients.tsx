@@ -8,7 +8,7 @@ import {RootState} from "../../services/store";
 import {IngredientsState,} from "../../services/reducers/ingredients";
 import {DragSourceMonitor, useDrag} from "react-dnd";
 import {addItem, BUN} from "../../services/reducers/cart";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 
 export interface BoxProps {
@@ -25,6 +25,7 @@ const BurgerIngredient: React.FC<{
     ingredient: Ingredient;
 }> = ({ingredient}) => {
     const dispatch = useDispatch();
+    const location = useLocation();
     const navigate = useNavigate();
     const [{opacity}, drag] = useDrag(
         () => ({
@@ -44,8 +45,8 @@ const BurgerIngredient: React.FC<{
     )
 
     const showIngredientDetails = useCallback(() => {
-        navigate(`/ingredient/${ingredient._id}`, {state: {showPopup: true}});
-    }, [ingredient, navigate]);
+        navigate(`/ingredient/${ingredient._id}`, {state: {background: location}});
+    }, [ingredient, navigate, location]);
 
     const addItemHandler = useCallback(() => {
         dispatch(addItem(ingredient));

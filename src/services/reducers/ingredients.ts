@@ -1,4 +1,4 @@
-import {Ingredient} from "../../components/common/ingredient";
+import {Ingredient} from "../../pages/common/ingredient";
 import {createAsyncThunk, createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
 import {getIngredients} from "../../utils/api-ingredients";
 import {BUN} from "./cart";

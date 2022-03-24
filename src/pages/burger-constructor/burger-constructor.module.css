@@ -65,3 +65,9 @@
 .dragBox {
     width: 32px;
 }
+
+.loading {
+    composes: text text_type_main-medium from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    composes: pt-30 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    text-align: center;
+}

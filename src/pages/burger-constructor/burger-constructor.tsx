@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo} from "react";
-import constructorStyles from './burger-constructor.module.css';
+import styles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import Price from "../common/price";
 import OrderDetails from "../order-details/order-details";
@@ -16,15 +16,15 @@ import {AuthState} from "../../services/reducers/auth";
 import {useLocation, useNavigate} from "react-router-dom";
 
 const BurgerConstructor = () => {
-    const cartState = useSelector<RootState,CartState>(state => state.cart);
-    const orderState = useSelector<RootState,OrderState>(state => state.order);
+    const cartState = useSelector<RootState, CartState>(state => state.cart);
+    const orderState = useSelector<RootState, OrderState>(state => state.order);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const {user} = useSelector<RootState, AuthState>(state => state.auth);
     let location = useLocation();
 
 
-    const [{ canDrop, isOver }, drop] = useDrop(
+    const [{canDrop, isOver}, drop] = useDrop(
         () => ({
             accept: INGREDIENT_TYPE,
             drop: () => ({
@@ -54,6 +54,10 @@ const BurgerConstructor = () => {
             + (cartState.bunItem ? cartState.bunItem.ingredient?.price : 0) * 2;
     }, [cartState]);
 
+    const isOrderValid = useMemo(() => {
+        return cartState.bunItem !== undefined;
+    }, [cartState]);
+
     const onClick = useCallback(() => {
         if (user) {
             dispatch(sendOrderThunk());
@@ -66,18 +70,22 @@ const BurgerConstructor = () => {
         dispatch(clearOrderThunk());
     }, [dispatch])
 
+    const handleCancel = useCallback(() => {
+        console.log('отмена заказа не реализована');
+    }, [])
+
     return (
         <>
-            <section className={constructorStyles.main} ref={drop} style={{border}}>
+            <section className={styles.main} ref={drop} style={{border}}>
                 {!cartState.bunItem && !cartState.items.length && (
-                    <div className={constructorStyles.emptyList}>
+                    <div className={styles.emptyList}>
                         Перетащите ингредиенты для добавления в заказ
                     </div>
                 )}
 
                 {cartState.bunItem && (
-                    <div className={constructorStyles.elementLineTop}>
-                        <div className={constructorStyles.dragBox}>&nbsp;</div>
+                    <div className={styles.elementLineTop}>
+                        <div className={styles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="top"
                             isLocked={true}
@@ -88,12 +96,12 @@ const BurgerConstructor = () => {
                     </div>
                 )}
 
-                <div className={constructorStyles.centerElements}>
+                <div className={styles.centerElements}>
 
                     {cartState.items.map((element, index) => (
                         <Draggable index={index} key={element.id} id={element.id} moveItems={moveItems}>
-                            <div className={constructorStyles.elementLineInner}>
-                                <div className={constructorStyles.dragBox}>
+                            <div className={styles.elementLineInner}>
+                                <div className={styles.dragBox}>
                                     <DragIcon type="primary"/>
                                 </div>
                                 <ConstructorElement
@@ -108,8 +116,8 @@ const BurgerConstructor = () => {
                 </div>
 
                 {cartState.bunItem && (
-                    <div className={constructorStyles.elementLineBottom}>
-                        <div className={constructorStyles.dragBox}>&nbsp;</div>
+                    <div className={styles.elementLineBottom}>
+                        <div className={styles.dragBox}>&nbsp;</div>
                         <ConstructorElement
                             type="bottom"
                             isLocked={true}
@@ -121,13 +129,15 @@ const BurgerConstructor = () => {
                 )}
                 {
                     total > 0 &&
-                    <div className={constructorStyles.totalLine}>
+                    <div className={styles.totalLine}>
                         <Price value={total} size={'medium'}/>
-                        <Button type="primary" onClick={onClick} disabled={orderState.orderSending}>Оформить заказ</Button>
+                        <Button type="primary" onClick={onClick} disabled={orderState.orderSending || !isOrderValid}>
+                            Оформить заказ
+                        </Button>
                     </div>
                 }
                 {orderState.orderFailed && (
-                    <div className={constructorStyles.errorMessage}>
+                    <div className={styles.errorMessage}>
                         Ошибка обработки заказа
                     </div>
                 )}
@@ -135,6 +145,13 @@ const BurgerConstructor = () => {
             {orderState.order && (
                 <Modal handleClose={handleClose}>
                     <OrderDetails order={orderState.order}/>
+                </Modal>
+            )}
+            {orderState.orderSending && (
+                <Modal handleClose={handleCancel} title={'Обработка'}>
+                    <div className={styles.loading}>
+                        Ждите - выполняется обработка заказа
+                    </div>
                 </Modal>
             )}
         </>
