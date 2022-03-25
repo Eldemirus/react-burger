@@ -1,16 +1,16 @@
 import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
-import {MainPage} from "../main-page/main-page";
+import {MainPage} from "../../pages/main-page/main-page";
 import {ProtectedRoute} from "../protected-route/protected-route";
-import {Login} from "../login/login";
-import {Register} from "../register/register";
-import {ForgotPassword} from "../forgot-password/forgot-password";
-import {ResetPassword} from "../reset-password/reset-password";
-import {Profile} from "../profile/profile";
-import {ProfileEdit} from "../profile/profile-edit";
-import {PageNotFound} from "../page-not-found/page-not-found";
+import {Login} from "../../pages/login/login";
+import {Register} from "../../pages/register/register";
+import {ForgotPassword} from "../../pages/forgot-password/forgot-password";
+import {ResetPassword} from "../../pages/reset-password/reset-password";
+import {Profile} from "../../pages/profile/profile";
+import {ProfileEdit} from "../../pages/profile/profile-edit";
+import {PageNotFound} from "../../pages/page-not-found/page-not-found";
 import React, {useCallback} from "react";
 import Modal from "../modal/modal";
-import IngredientDetails from "../ingredient-details/ingredient-details";
+import IngredientDetails from "../../pages/ingredient-details/ingredient-details";
 
 export const AppRouting = () => {
     const location = useLocation();

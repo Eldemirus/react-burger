@@ -1,7 +1,7 @@
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useCallback, useState} from "react";
 import {Link, Navigate, useLocation} from "react-router-dom";
-import {RouteState} from "../protected-route/protected-route";
+import {RouteState} from "../../components/protected-route/protected-route";
 import {useDispatch, useSelector} from "react-redux";
 import {AuthState, loginUserThunk} from "../../services/reducers/auth";
 import {RootState} from "../../services/store";

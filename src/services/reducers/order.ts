@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
-import {Order} from "../../pages/common/order";
+import {Order} from "../../components/common/order";
 import {clearIngredientAmount} from "./ingredients";
 import {sendOrder} from "../../utils/api-ingredients";
 import {RootState} from "../store";

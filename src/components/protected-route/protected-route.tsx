@@ -2,7 +2,7 @@ import {Navigate, useLocation} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {RootState} from "../../services/store";
 import {AuthState} from "../../services/reducers/auth";
-import styles from "../page-not-found/page-not-found.module.css";
+import styles from "../../pages/page-not-found/page-not-found.module.css";
 import React from "react";
 
 export interface RouteState {

@@ -14,7 +14,7 @@
 }
 
 .loading {
-    composes: text text_type_main-medium from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    composes: text text_type_main-medium from '../../../node_modules/@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
     margin: auto;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .ingredientCardList {
-    composes: pl-4 pr-4 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    composes: pl-4 pr-4 from '../../../node_modules/@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
     display: flex;
     flex-direction: column;
     height: calc(100vh - 300px);
@@ -47,7 +47,7 @@
 
 
 .ingredientCard {
-    composes:  mb-8 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    composes:  mb-8 from '../../../node_modules/@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -56,6 +56,6 @@
 }
 
 .ingredientTitle {
-    composes: text text_type_main-default from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    composes: text text_type_main-default from '../../../node_modules/@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
     height: 48px;
 }
