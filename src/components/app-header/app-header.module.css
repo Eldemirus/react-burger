@@ -42,10 +42,32 @@
 }
 
 .navItem {
-    composes: p-5 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    composes: p-5 from '../../../node_modules/@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     border-radius: 40px;
+    text-decoration: none;
 }
+.navItem, .navItem:visited{
+    color: #8585AD;
+}
+
+.linkText {
+    composes: text text_type_main-default from '../../../node_modules/@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    composes: pl-2 from '../../../node_modules/@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+}
+
+.navItemActive {
+    composes: navItem;
+}
+
+.navItemActive span {
+    color: #F2F2F3;
+}
+
+.navItemActive svg {
+    fill: #F2F2F3;
+}
+

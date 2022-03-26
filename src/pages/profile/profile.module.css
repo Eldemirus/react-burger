@@ -1,0 +1,50 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 120px auto 0 auto;
+
+}
+
+.navProfile {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+
+}
+
+.navLinkProfile {
+    composes: pr-15 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    composes: navLink from '../../index.css';
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 64px;
+}
+
+.navLinkProfile, .navLinkProfile:visited {
+    text-decoration: none;
+    color: #8585AD
+}
+
+.navLinkProfileActive {
+    text-decoration: none;
+    composes: navLinkProfile;
+}
+
+.navLinkProfileActive, .navLinkProfileActive:visited {
+    color: #F2F2F3;
+}
+
+.profileContent {
+    width: 600px;
+    height: 100%;
+}
+
+.buttonLine {
+    display: flex;
+    flex-direction: row;
+}

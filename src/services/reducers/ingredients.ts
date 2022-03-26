@@ -1,6 +1,6 @@
 import {Ingredient} from "../../components/common/ingredient";
 import {createAsyncThunk, createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
-import {getIngredients} from "../../utils/api";
+import {getIngredients} from "../../utils/api-ingredients";
 import {BUN} from "./cart";
 
 export interface IngredientsState {
@@ -74,9 +74,9 @@ export const loadIngredients = createAsyncThunk(
     // Declare the type your function argument here:
     async (_, {dispatch }) => {
         dispatch(getIngredientsStarted());
-        getIngredients().then(data => {
+        getIngredients().then(result => {
             dispatch(getIngredientsSuccess());
-            dispatch(setIngredients(data));
+            dispatch(setIngredients(result.data));
         }).catch(error => {
             console.log('error', error);
             dispatch(getIngredientsFailed());

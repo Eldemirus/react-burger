@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./order-details.module.css";
-import {Order} from "../common/order";
+import {Order} from "../../components/common/order";
 import image from "../../images/order-check.svg";
 import {CheckMarkIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 
