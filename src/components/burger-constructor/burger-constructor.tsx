@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo} from "react";
 import styles from './burger-constructor.module.css';
 import {Button, ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import Price from "../common/price";
+import Price from "../price/price";
 import OrderDetails from "../../pages/order-details/order-details";
 import Modal from "../modal/modal";
 import {OrderItem} from "../common/order-item";

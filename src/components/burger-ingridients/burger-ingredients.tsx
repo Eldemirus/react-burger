@@ -1,7 +1,7 @@
 import {Counter, Tab} from '@ya.praktikum/react-developer-burger-ui-components';
 import ingStyles from './burger-ingredients.module.css';
 import React, {useCallback, useEffect, useMemo, useRef} from "react";
-import Price from "../common/price";
+import Price from "../price/price";
 import {Ingredient, INGREDIENT_TYPE} from "../common/ingredient";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../services/store";
@@ -125,6 +125,7 @@ const IngredientTabs: React.FC<{
     )
 }
 
+type IngredientCounts = {[name:string]: Array<Ingredient>};
 
 const BurgerIngredients: React.FC = () => {
     const [current, setCurrent] = React.useState(BUN)
@@ -144,10 +145,10 @@ const BurgerIngredients: React.FC = () => {
     }, [])
 
     const ingredientsByType = useMemo(() => {
-        return ingredientTypes.reduce((counts: any, type) => {
+        return ingredientTypes.reduce((counts: IngredientCounts, type: IngredientTypes) => {
             counts[type.type] = ingredients.filter((ingredient: Ingredient) => ingredient.type === type.type);
             return counts;
-        }, {} as Object);
+        }, {} as IngredientCounts);
     }, [ingredients])
 
 
