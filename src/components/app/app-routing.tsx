@@ -11,6 +11,8 @@ import {PageNotFound} from "../../pages/page-not-found/page-not-found";
 import React, {useCallback} from "react";
 import Modal from "../modal/modal";
 import IngredientDetails from "../../pages/ingredient-details/ingredient-details";
+import {Feed} from "../../pages/feed/feed";
+import {ProfileOrders} from "../../pages/profile/profile-orders";
 
 export const AppRouting = () => {
     const location = useLocation();
@@ -25,6 +27,8 @@ export const AppRouting = () => {
         <>
             <Routes location={state?.background || location}>
                 <Route index element={<MainPage/>}/>
+                <Route path="feed" element={<Feed/>}/>
+                <Route path="feed/:id" element={<Feed/>}/>
                 <Route path="login"
                        element={<ProtectedRoute authorized={false}><Login/></ProtectedRoute>}/>
                 <Route path="register"
@@ -37,7 +41,7 @@ export const AppRouting = () => {
                        element={<IngredientDetails/>}/>
                 <Route path="profile" element={<ProtectedRoute authorized={true}><Profile/></ProtectedRoute>}>
                     <Route index element={<ProfileEdit/>}/>
-                    <Route path="orders" element={<PageNotFound/>}/>
+                    <Route path="orders" element={<ProfileOrders/>}/>
                     <Route path="orders/:id" element={<PageNotFound/>}/>
                 </Route>
                 <Route path="*" element={<PageNotFound/>}/>

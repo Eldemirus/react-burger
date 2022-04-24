@@ -1,0 +1,65 @@
+.main {
+    display: flex;
+    width: 1240px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.headerContainer {
+    composes: pt-10 pb-5  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+
+    composes: text text_type_main-large  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    width: 100%;
+}
+
+.feedContainer {
+    composes: pr-2  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    height: calc(100vh - 250px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    /*max-width: 600px;*/
+    width: 584px;
+    gap: 16px;
+}
+
+.infoContainer {
+    max-width: 600px;
+    width: 600px;
+    display: flex;
+    gap: 60px;
+    flex-direction: column;
+}
+
+.orderStatusList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /*gap: 24px;*/
+}
+.orderStatusListName {
+    composes: text text_type_main-medium  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    composes: pb-6  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+}
+.orderStatusListNumbers {
+    composes: text text_type_digits-default  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+
+}
+.statusListContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 36px;
+}
+
+.orderTotalName {
+    composes: text text_type_main-medium  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+}
+.orderTotalAmount {
+    composes: text text_type_digits-large  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    color: #F2F2F3;
+    text-shadow: 0 0 16px rgba(51, 51, 255, 0.25), 0 0 8px rgba(51, 51, 255, 0.25), 0 4px 32px rgba(51, 51, 255, 0.5);
+}

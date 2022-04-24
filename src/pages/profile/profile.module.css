@@ -40,11 +40,22 @@
 }
 
 .profileContent {
-    width: 600px;
+    width: 100%;
     height: 100%;
 }
 
 .buttonLine {
     display: flex;
     flex-direction: row;
+}
+
+.feedContainer {
+    composes: pr-2  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+    height: calc(100vh - 250px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    /*max-width: 600px;*/
+    width: 100%;
+    gap: 16px;
 }

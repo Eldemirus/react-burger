@@ -1,46 +1,27 @@
-import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "../../services/store";
+import {OrderPreview} from "../../components/order-preview/order-preview";
+import styles from './profile.module.css';
 
 export const ProfileOrders = () => {
+    const dispatch = useDispatch();
+    const {orders} = useSelector(state => state.orderList);
+    const {token} = useSelector(state => state.auth);
 
-
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
+    useEffect(() => {
+        dispatch({type: 'WS_CONNECTION_START', payload: `orders?token=${token}`})
+        return () => {
+            dispatch({type: 'WS_CONNECTION_STOP'})
+        }
+    }, [dispatch, token])
 
     return (
-        <div className='centered-container'>
+        <div className={styles.feedContainer}>
+            {orders.map(order => (
+                <OrderPreview order={order} key={order._id} showStatus={true}/>
+            ))}
 
-            <div className='formContainer'>
-                <h1 className={'text text_type_main-medium'}>Регистрация</h1>
-                <Input
-                    type={'text'}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder='Имя'
-                />
-                <Input
-                    type={'email'}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder='E-mail'
-                />
-                <PasswordInput
-                    value={password}
-                    name={'пароль'}
-                    size={'default'}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button type={'primary'}>Зарегистрироваться</Button>
-
-                <div className='formFooter'>
-                    <nav className='text text_type_main-default mt-20 mb-4'>
-                        Вы новый пользователь?&nbsp;
-                        <Link className='navLink' to={'/login'}>Войти</Link>
-                    </nav>
-                </div>
-            </div>
         </div>
-    )
+    );
+
 }
