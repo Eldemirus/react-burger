@@ -34,7 +34,7 @@ export const ProfileOrders = () => {
 
   return (
       <div className={styles.feedContainer}>
-        {orders.length ? <div>Отсутствует информация о заказах</div> :
+        {orders.length === 0 ? <div>Отсутствует информация о заказах</div> :
             (orders.map(order => (
                 <OrderPreview order={order} key={order._id} showStatus={true} onClick={onClick}/>
             )))

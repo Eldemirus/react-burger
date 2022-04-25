@@ -17,7 +17,7 @@ export const socketMiddleware = (wsUrl: string): Middleware => {
     let socket: WebSocket | null = null;
 
     return next => (action: AppAction) => {
-      const { dispatch, getState } = store;
+      const { dispatch } = store;
       const { type, payload } = action;
 
       if (type === 'WS_CONNECTION_START') {
@@ -41,15 +41,14 @@ export const socketMiddleware = (wsUrl: string): Middleware => {
         socket.onmessage = event => {
           const { data } = event;
           const message = JSON.parse(data);
-
           if (message.success) {
-            dispatch(getOrderListSuccess())
             dispatch(setOrderList(message.orders));
             dispatch(setTotal(message.total));
             dispatch(setTotalToday(message.totalToday));
+            dispatch(getOrderListSuccess())
           } else {
-            dispatch(getOrderListFailed());
             dispatch(clearOrderList());
+            dispatch(getOrderListFailed());
           }
         };
         // функция, которая вызывается при закрытии соединения

@@ -4,6 +4,7 @@ import {Order, statusMap} from "../common/order";
 import Price from "../price/price";
 import {Ingredient} from "../common/ingredient";
 import {useSelector} from "../../services/store";
+import {dateFormat} from "../../utils/date-format";
 
 type IngredientPreviewProps = {
   ingredient: Ingredient;
@@ -50,7 +51,7 @@ export const OrderPreview: FC<OrderPreviewProps> = ({order, onClick, showStatus 
       <div className={styles.orderContainer} onClick={onClickOrder}>
         <div className={styles.headerLine}>
           <div className={styles.orderNumber}>#{order.number}</div>
-          <div className={styles.orderTime}>{order.updatedAt}</div>
+          <div className={styles.orderTime}>{dateFormat(order.updatedAt ?? '')}</div>
         </div>
 
         <div className={styles.orderName}>{order.name}</div>

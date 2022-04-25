@@ -16,7 +16,7 @@ const OrderStatusList: FC<OrderStatusListProps> = ({orders, name}) => {
         <h1 className={styles.orderStatusListName}>{name}:</h1>
         <div className={styles.orderStatusListNumbers}>
           {orders.map(order => (
-              <div key={order.number}>{order.number}</div>
+              <div key={order.number} className={styles.orderNumber}>{order.number}</div>
           ))}
         </div>
       </div>

@@ -57,6 +57,11 @@ export const AppRouting = () => {
                     <OrderInfo/>
                   </Modal>
                 }/>
+                <Route path="profile/orders/:id" element={
+                  <Modal handleClose={closePopup}>
+                    <OrderInfo/>
+                  </Modal>
+                }/>
             </Routes>
         }
       </>

@@ -8,6 +8,7 @@ import {Ingredient} from "../../components/common/ingredient";
 import {useLocation, useMatch} from "react-router-dom";
 import {OrderListState} from "../../services/reducers/order-list";
 import Price from "../../components/price/price";
+import {dateFormat} from "../../utils/date-format";
 
 
 type IngredientLineProps = {
@@ -110,7 +111,7 @@ const OrderInfo: React.FC = () => {
               ))}
             </div>
             <div className={styles.footerLine}>
-              <div>{order.updatedAt}</div>
+              <div className={styles.dateText}>{dateFormat(order.updatedAt??'')}</div>
               <div><Price value={total}/></div>
             </div>
           </div>
