@@ -1,6 +1,6 @@
 import {NavLink, Outlet} from "react-router-dom";
 import styles from './profile.module.css';
-import {useDispatch} from "react-redux";
+import {useDispatch} from "../../services/store";
 import {logoutUserThunk} from "../../services/reducers/auth";
 import React from "react";
 

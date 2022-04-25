@@ -1,12 +1,9 @@
 import React, {FC, useEffect, useMemo} from "react";
 import styles from "./order-info.module.css";
 import {statusMap} from "../../components/common/order";
-import {useSelector} from "react-redux";
-import {RootState, useDispatch} from "../../services/store";
-import {IngredientsState} from "../../services/reducers/ingredients";
+import {useDispatch, useSelector} from "../../services/store";
 import {Ingredient} from "../../components/common/ingredient";
 import {useLocation, useMatch} from "react-router-dom";
-import {OrderListState} from "../../services/reducers/order-list";
 import Price from "../../components/price/price";
 import {dateFormat} from "../../utils/date-format";
 
@@ -43,13 +40,13 @@ const OrderInfo: React.FC = () => {
   const matchProfile = useMatch('/profile/orders/:id');
   const location = useLocation();
   const dispatch = useDispatch();
-  const {orders, ordersLoading, ordersFailed} = useSelector<RootState, OrderListState>(state => state.orderList);
+  const {orders, ordersLoading, ordersFailed} = useSelector(state => state.orderList);
   const state = location.state as { background: Location }
 
   const orderId = match?.params.id ?? matchProfile?.params.id;
   const order = useMemo(() => orders.find(order => order._id === orderId), [orders, orderId]);
 
-  const {ingredients} = useSelector<RootState, IngredientsState>(state => state.ingredients);
+  const {ingredients} = useSelector(state => state.ingredients);
   const orderIngredients = useMemo(() => {
     return order?.ingredients?.map(id => {
           return ingredients.find(ingredient => ingredient._id === id);

@@ -1,2 +1,2 @@
 export const URL: string = 'https://norma.nomoreparties.space/api';
-export const wsURL: string = 'wss://norma.nomoreparties.space/';
+export const WS_URL: string = 'wss://norma.nomoreparties.space/';

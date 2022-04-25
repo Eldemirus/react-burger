@@ -1,9 +1,8 @@
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useCallback, useState} from "react";
 import {Link, Navigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../services/store";
-import {passwordSaveThunk, RestorePasswordState} from "../../services/reducers/restore-password";
+import {useDispatch, useSelector} from "../../services/store";
+import {passwordSaveThunk} from "../../services/reducers/restore-password";
 import {loginUserThunk} from "../../services/reducers/auth";
 
 export const ResetPassword = () => {
@@ -15,7 +14,7 @@ export const ResetPassword = () => {
         passwordSaveFailed,
         passwordSaveStarted,
         passwordSaveSuccess
-    } = useSelector<RootState, RestorePasswordState>(state => state.restorePassword);
+    } = useSelector(state => state.restorePassword);
     const dispatch = useDispatch();
     const onSubmit = useCallback((event) => {
         event.preventDefault();

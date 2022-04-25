@@ -5,22 +5,20 @@ import Price from "../price/price";
 import OrderDetails from "../../pages/order-details/order-details";
 import Modal from "../modal/modal";
 import {OrderItem} from "../common/order-item";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../services/store";
+import {useDispatch, useSelector} from "../../services/store";
 import {useDrop} from "react-dnd";
 import {INGREDIENT_TYPE} from "../common/ingredient";
 import {Draggable} from "./draggable";
-import {CartState, deleteItem, swapOrderItems} from "../../services/reducers/cart";
-import {clearOrderThunk, OrderState, sendOrderThunk} from "../../services/reducers/order";
-import {AuthState} from "../../services/reducers/auth";
+import {deleteItem, swapOrderItems} from "../../services/reducers/cart";
+import {clearOrderThunk, sendOrderThunk} from "../../services/reducers/order";
 import {useLocation, useNavigate} from "react-router-dom";
 
 const BurgerConstructor = () => {
-    const cartState = useSelector<RootState, CartState>(state => state.cart);
-    const orderState = useSelector<RootState, OrderState>(state => state.order);
+    const cartState = useSelector(state => state.cart);
+    const orderState = useSelector(state => state.order);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {user} = useSelector<RootState, AuthState>(state => state.auth);
+    const {user} = useSelector(state => state.auth);
     let location = useLocation();
 
 

@@ -3,13 +3,13 @@ import {rootReducer} from './reducers';
 import {jwt} from "./middleware/jwt";
 import {TypedUseSelectorHook, useDispatch as dispatchHook, useSelector as selectorHook} from 'react-redux';
 import {socketMiddleware} from "./middleware/socketMiddleware";
-import {wsURL} from "../utils/parameters";
+import {WS_URL} from "../utils/parameters";
 
 const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         serializableCheck: false
-    }).concat(jwt, socketMiddleware(`${wsURL}`)),
+    }).concat(jwt, socketMiddleware(`${WS_URL}`)),
     devTools: process.env.NODE_ENV !== 'production',
 })
 

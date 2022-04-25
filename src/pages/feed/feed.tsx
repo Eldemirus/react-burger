@@ -2,9 +2,8 @@ import React, {FC, useCallback, useEffect, useMemo} from "react";
 import styles from './feed.module.css';
 import {OrderPreview} from "../../components/order-preview/order-preview";
 import {Order} from "../../components/common/order";
-import {RootState, useDispatch} from "../../services/store";
-import {useSelector} from "react-redux";
-import {clearOrderList, OrderListState} from "../../services/reducers/order-list";
+import {useDispatch, useSelector} from "../../services/store";
+import {clearOrderList} from "../../services/reducers/order-list";
 import {useLocation, useNavigate} from "react-router-dom";
 
 
@@ -28,7 +27,7 @@ export const Feed: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const {orders, totalToday, total} = useSelector<RootState, OrderListState>(state => state.orderList);
+  const {orders, totalToday, total} = useSelector(state => state.orderList);
 
   useEffect(() => {
     dispatch(clearOrderList());

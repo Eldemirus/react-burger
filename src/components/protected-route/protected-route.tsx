@@ -1,7 +1,5 @@
 import {Navigate, useLocation} from "react-router-dom";
-import {useSelector} from "react-redux";
-import {RootState} from "../../services/store";
-import {AuthState} from "../../services/reducers/auth";
+import {useSelector} from "../../services/store";
 import styles from "../../pages/page-not-found/page-not-found.module.css";
 import React from "react";
 
@@ -12,7 +10,7 @@ export interface RouteState {
 }
 
 export function ProtectedRoute({authorized, children}: { authorized: boolean, children: JSX.Element }) {
-    const {user, checkingUser} = useSelector<RootState, AuthState>(state => state.auth);
+    const {user, checkingUser} = useSelector(state => state.auth);
     let location = useLocation();
     const state = location.state as RouteState;
 

@@ -2,9 +2,8 @@ import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger
 import {useCallback, useState} from "react";
 import {Link, Navigate, useLocation} from "react-router-dom";
 import {RouteState} from "../../components/protected-route/protected-route";
-import {useDispatch, useSelector} from "react-redux";
-import {AuthState, loginUserThunk} from "../../services/reducers/auth";
-import {RootState} from "../../services/store";
+import {useDispatch, useSelector} from "../../services/store";
+import {loginUserThunk} from "../../services/reducers/auth";
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -12,7 +11,7 @@ export const Login = () => {
     const dispatch = useDispatch();
     const location = useLocation();
     const state = location.state as RouteState;
-    const {loginFailed, loginStarted, loginSuccess} = useSelector<RootState, AuthState>(state => state.auth);
+    const {loginFailed, loginStarted, loginSuccess} = useSelector(state => state.auth);
 
     let from = state?.from?.pathname || "/";
 
