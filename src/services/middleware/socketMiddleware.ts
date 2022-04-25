@@ -2,7 +2,15 @@
 import type {Middleware, MiddlewareAPI} from 'redux';
 
 import type {AppAction, AppDispatch, RootState} from '../store';
-import {getOrderListFailed, setOrderList} from "../reducers/order-list";
+import {
+  clearOrderList,
+  getOrderListFailed,
+  getOrderListStarted,
+  getOrderListSuccess,
+  setOrderList,
+  setTotal,
+  setTotalToday
+} from "../reducers/order-list";
 
 export const socketMiddleware = (wsUrl: string): Middleware => {
   return ((store: MiddlewareAPI<AppDispatch, RootState>) => {
@@ -14,6 +22,7 @@ export const socketMiddleware = (wsUrl: string): Middleware => {
 
       if (type === 'WS_CONNECTION_START') {
         socket = new WebSocket(wsUrl + payload);
+        dispatch(getOrderListStarted())
       }
       if (socket) {
 
@@ -33,7 +42,15 @@ export const socketMiddleware = (wsUrl: string): Middleware => {
           const { data } = event;
           const message = JSON.parse(data);
 
-          dispatch(setOrderList(message.orders));
+          if (message.success) {
+            dispatch(getOrderListSuccess())
+            dispatch(setOrderList(message.orders));
+            dispatch(setTotal(message.total));
+            dispatch(setTotalToday(message.totalToday));
+          } else {
+            dispatch(getOrderListFailed());
+            dispatch(clearOrderList());
+          }
         };
         // функция, которая вызывается при закрытии соединения
         socket.onclose = event => {
