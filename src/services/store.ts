@@ -4,6 +4,7 @@ import {jwt} from "./middleware/jwt";
 import {TypedUseSelectorHook, useDispatch as dispatchHook, useSelector as selectorHook} from 'react-redux';
 import {socketMiddleware} from "./middleware/socketMiddleware";
 import {WS_URL} from "../utils/parameters";
+import {WsActions} from "./actions/ws-actions";
 
 const store = configureStore({
     reducer: rootReducer,
@@ -17,7 +18,7 @@ const store = configureStore({
 export type RootState = ReturnType<typeof rootReducer>
 export type AppDispatch = typeof store.dispatch
 export type AppAction = {
-    type: string;
+    type: WsActions;
     payload: any;
 }
 
