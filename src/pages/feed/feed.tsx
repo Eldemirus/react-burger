@@ -5,6 +5,7 @@ import {Order} from "../../components/common/order";
 import {useDispatch, useSelector} from "../../services/store";
 import {clearOrderList} from "../../services/reducers/order-list";
 import {useLocation, useNavigate} from "react-router-dom";
+import {wsConnect, wsDisconnect} from "../../services/actions/ws-actions";
 
 
 type OrderStatusListProps = { orders: Array<Order>, name: string }
@@ -31,9 +32,9 @@ export const Feed: FC = () => {
 
   useEffect(() => {
     dispatch(clearOrderList());
-    dispatch({type: 'WS_CONNECTION_START', payload: 'orders/all'})
+    dispatch(wsConnect('orders/all'))
     return () => {
-      dispatch({type: 'WS_CONNECTION_STOP'})
+      dispatch(wsDisconnect())
     }
   }, [dispatch])
 

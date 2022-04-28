@@ -1,4 +1,4 @@
-import {createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Order} from "../../components/common/order";
 
 export interface OrderListState {
@@ -83,28 +83,28 @@ export const orderListSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    getOrderListStarted: (state: Draft<OrderListState>) => {
+    getOrderListStarted: (state) => {
       state.ordersLoading = true;
       state.ordersFailed = false;
     },
-    getOrderListFailed: (state: Draft<OrderListState>) => {
+    getOrderListFailed: (state) => {
       state.ordersLoading = false;
       state.ordersFailed = true;
     },
-    getOrderListSuccess: (state: Draft<OrderListState>) => {
+    getOrderListSuccess: (state) => {
       state.ordersLoading = false;
       state.ordersFailed = false;
     },
-    setOrderList: (state: Draft<OrderListState>, action: PayloadAction<Order[]>) => {
+    setOrderList: (state, action: PayloadAction<Order[]>) => {
       state.orders = action.payload;
     },
-    setTotal: (state: Draft<OrderListState>, action: PayloadAction<number>) => {
+    setTotal: (state, action: PayloadAction<number>) => {
       state.total = action.payload;
     },
-    setTotalToday: (state: Draft<OrderListState>, action: PayloadAction<number>) => {
+    setTotalToday: (state, action: PayloadAction<number>) => {
       state.totalToday = action.payload;
     },
-    clearOrderList: (state: Draft<OrderListState>) => {
+    clearOrderList: (state) => {
       state.orders = [];
       state.total = 0;
       state.totalToday = 0;

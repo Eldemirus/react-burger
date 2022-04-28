@@ -12,11 +12,12 @@ import {
   setTotalToday
 } from "../reducers/order-list";
 import {
-  WS_CONNECTION_CLOSED,
-  WS_CONNECTION_ERROR, WS_CONNECTION_START,
+  WS_CONNECTION_START,
   WS_CONNECTION_STOP,
-  WS_CONNECTION_SUCCESS,
-  WS_SEND_MESSAGE
+  WS_SEND_MESSAGE,
+  wsConnectClosed,
+  wsConnectError,
+  wsConnectSuccess
 } from "../actions/ws-actions";
 
 export const socketMiddleware = (wsUrl: string): Middleware => {
@@ -35,12 +36,12 @@ export const socketMiddleware = (wsUrl: string): Middleware => {
 
         // функция, которая вызывается при открытии сокета
         socket.onopen = event => {
-          dispatch({ type: WS_CONNECTION_SUCCESS, payload: event });
+          dispatch(wsConnectSuccess(event));
         };
 
         // функция, которая вызывается при ошибке соединения
         socket.onerror = event => {
-          dispatch({ type: WS_CONNECTION_ERROR, payload: event });
+          dispatch(wsConnectError(event));
           dispatch(getOrderListFailed());
         };
 
@@ -60,7 +61,7 @@ export const socketMiddleware = (wsUrl: string): Middleware => {
         };
         // функция, которая вызывается при закрытии соединения
         socket.onclose = event => {
-          dispatch({ type: WS_CONNECTION_CLOSED, payload: event });
+          dispatch(wsConnectClosed(event));
         };
 
         if (type === WS_SEND_MESSAGE) {

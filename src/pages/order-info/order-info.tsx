@@ -6,6 +6,7 @@ import {Ingredient} from "../../components/common/ingredient";
 import {useLocation, useMatch} from "react-router-dom";
 import Price from "../../components/price/price";
 import {dateFormat} from "../../utils/date-format";
+import {wsConnect, wsDisconnect} from "../../services/actions/ws-actions";
 
 
 type IngredientLineProps = {
@@ -67,9 +68,9 @@ const OrderInfo: React.FC = () => {
 
   useEffect(() => {
     if (!state?.background) {
-      dispatch({type: 'WS_CONNECTION_START', payload: 'orders/all'})
+      dispatch(wsConnect('orders/all'))
       return () => {
-        dispatch({type: 'WS_CONNECTION_STOP'})
+        dispatch(wsDisconnect())
       }
     }
   }, [dispatch, state])

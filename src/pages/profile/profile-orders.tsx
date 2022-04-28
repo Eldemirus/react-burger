@@ -5,6 +5,7 @@ import styles from './profile.module.css';
 import {clearOrderList} from "../../services/reducers/order-list";
 import {useLocation, useNavigate} from "react-router-dom";
 import {Order} from "../../components/common/order";
+import {wsConnect, wsDisconnect} from "../../services/actions/ws-actions";
 
 export const ProfileOrders = () => {
   const dispatch = useDispatch();
@@ -15,9 +16,9 @@ export const ProfileOrders = () => {
 
   useEffect(() => {
     dispatch(clearOrderList());
-    dispatch({type: 'WS_CONNECTION_START', payload: `orders?token=${token}`})
+    dispatch(wsConnect(`orders?token=${token}`))
     return () => {
-      dispatch({type: 'WS_CONNECTION_STOP'})
+      dispatch(wsDisconnect())
     }
   }, [dispatch, token])
 
