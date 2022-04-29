@@ -54,7 +54,6 @@ const OrderInfo: React.FC = () => {
         })
         .reduce((a,b) => {
           const v = a.find(c => c._id === b?._id);
-          console.log('REDUCE', a, b, v);
           if (v) {
             v.amount = v.amount ? v.amount + 1 : 2;
           } else {

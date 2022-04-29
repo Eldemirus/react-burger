@@ -1,77 +1,72 @@
-// socketMiddleware.ts
 import type {Middleware, MiddlewareAPI} from 'redux';
 
-import type {AppAction, AppDispatch, RootState} from '../store';
-import {
-  clearOrderList,
-  getOrderListFailed,
-  getOrderListStarted,
-  getOrderListSuccess,
-  setOrderList,
-  setTotal,
-  setTotalToday
-} from "../reducers/order-list";
-import {
-  WS_CONNECTION_START,
-  WS_CONNECTION_STOP,
-  WS_SEND_MESSAGE,
-  wsConnectClosed,
-  wsConnectError,
-  wsConnectSuccess
-} from "../actions/ws-actions";
+import type {AppDispatch, RootState} from '../store';
+import {ActionCreatorWithoutPayload, ActionCreatorWithPayload, AsyncThunk} from "@reduxjs/toolkit";
 
-export const socketMiddleware = (wsUrl: string): Middleware => {
+export type TWsActionTypes = {
+  wsConnect: ActionCreatorWithPayload<string>,
+  wsDisconnect: ActionCreatorWithoutPayload,
+  wsSendMessage?: ActionCreatorWithPayload<any>,
+  wsConnecting?: ActionCreatorWithoutPayload,
+  onOpen: ActionCreatorWithoutPayload,
+  onClose: ActionCreatorWithoutPayload,
+  onError: ActionCreatorWithoutPayload,
+  onMessage: ActionCreatorWithPayload<any> | AsyncThunk<void, any, {}>
+}
+
+
+
+export const socketMiddleware = (wsActions: TWsActionTypes, wsUrl: string): Middleware => {
   return ((store: MiddlewareAPI<AppDispatch, RootState>) => {
     let socket: WebSocket | null = null;
 
-    return next => (action: AppAction) => {
+    return next => (action) => {
       const { dispatch } = store;
-      const { type, payload } = action;
+      const { wsConnect, wsDisconnect, wsSendMessage, onOpen,
+        onClose, onError, onMessage, wsConnecting } = wsActions;
 
-      if (type === WS_CONNECTION_START) {
-        socket = new WebSocket(wsUrl + payload);
-        dispatch(getOrderListStarted())
+      if (wsConnect.match(action)) {
+        socket = new WebSocket(wsUrl + action.payload);
+        if (wsConnecting) {
+          dispatch(wsConnecting());
+        }
       }
       if (socket) {
 
         // функция, которая вызывается при открытии сокета
-        socket.onopen = event => {
-          dispatch(wsConnectSuccess(event));
+        socket.onopen = () => {
+          dispatch(onOpen());
         };
 
         // функция, которая вызывается при ошибке соединения
-        socket.onerror = event => {
-          dispatch(wsConnectError(event));
-          dispatch(getOrderListFailed());
+        socket.onerror = error => {
+          console.log('socket error', error);
+          dispatch(onError());
         };
 
         // функция, которая вызывается при получения события от сервера
         socket.onmessage = event => {
           const { data } = event;
           const message = JSON.parse(data);
-          if (message.success) {
-            dispatch(setOrderList(message.orders));
-            dispatch(setTotal(message.total));
-            dispatch(setTotalToday(message.totalToday));
-            dispatch(getOrderListSuccess())
-          } else {
-            dispatch(clearOrderList());
-            dispatch(getOrderListFailed());
-          }
+          dispatch(onMessage(message));
         };
         // функция, которая вызывается при закрытии соединения
         socket.onclose = event => {
-          dispatch(wsConnectClosed(event));
+          if (event.code !== 1000) {
+            console.log('error', event);
+            dispatch(onError());
+          }
+          dispatch(onClose());
         };
 
-        if (type === WS_SEND_MESSAGE) {
-          const message = payload;
+        if (wsSendMessage && wsSendMessage.match(action))  {
           // функция для отправки сообщения на сервер
-          socket.send(JSON.stringify(message));
+          socket.send(JSON.stringify(action.payload));
         }
 
-        if (type === WS_CONNECTION_STOP) {
+        if (wsDisconnect.match(action)) {
           socket.close();
+          dispatch(onClose());
         }
       }
 

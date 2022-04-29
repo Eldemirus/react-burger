@@ -41,7 +41,6 @@ export const authSlice = createSlice({
             state.user = action.payload;
         },
         setToken: (state: Draft<AuthState>, action: PayloadAction<string>) => {
-            console.log('SAVE TOKEN', action.payload)
             if (action.payload) {
                 state.token = action.payload;
             }
