@@ -1,9 +1,8 @@
 import {Button, Input} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useCallback, useState} from "react";
 import {Link, Navigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../services/store";
-import {passwordEmailThunk, RestorePasswordState} from "../../services/reducers/restore-password";
+import {passwordEmailThunk} from "../../services/reducers/restore-password";
+import {useSelector, useDispatch} from "../../services/store";
 
 export const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -11,7 +10,7 @@ export const ForgotPassword = () => {
         codeSentStarted,
         codeSentFailed,
         codeSentSuccess
-    } = useSelector<RootState, RestorePasswordState>(state => state.restorePassword);
+    } = useSelector(state => state.restorePassword);
     const dispatch = useDispatch();
 
 

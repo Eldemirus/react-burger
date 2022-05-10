@@ -1,46 +1,46 @@
-import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {useState} from "react";
-import {Link} from "react-router-dom";
+import React, {useCallback, useEffect} from "react";
+import {useDispatch, useSelector} from "../../services/store";
+import {OrderPreview} from "../../components/order-preview/order-preview";
+import styles from './profile.module.css';
+import {clearOrderList} from "../../services/reducers/order-list";
+import {useLocation, useNavigate} from "react-router-dom";
+import {Order} from "../../components/common/order";
+import {wsConnect, wsDisconnect} from "../../services/actions/ws-actions";
 
 export const ProfileOrders = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const {orders, ordersLoading, ordersFailed} = useSelector(state => state.orderList);
+  const {token} = useSelector(state => state.auth);
 
+  useEffect(() => {
+    dispatch(clearOrderList());
+    dispatch(wsConnect(`orders?token=${token}`))
+    return () => {
+      dispatch(wsDisconnect())
+    }
+  }, [dispatch, token])
 
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
+  const onClick = useCallback((order: Order) => {
+    navigate(`/profile/orders/${order._id}`, {state: {background: location}});
+  }, [navigate, location]);
 
-    return (
-        <div className='centered-container'>
+  if (ordersFailed) {
+    return (<div>Ошибка при загрузке заказов</div>);
+  }
+  if (ordersLoading) {
+    return (<div>выполняется загрузка</div>);
+  }
 
-            <div className='formContainer'>
-                <h1 className={'text text_type_main-medium'}>Регистрация</h1>
-                <Input
-                    type={'text'}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder='Имя'
-                />
-                <Input
-                    type={'email'}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder='E-mail'
-                />
-                <PasswordInput
-                    value={password}
-                    name={'пароль'}
-                    size={'default'}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button type={'primary'}>Зарегистрироваться</Button>
+  return (
+      <div className={styles.feedContainer}>
+        {orders.length === 0 ? <div>Отсутствует информация о заказах</div> :
+            (orders.map(order => (
+                <OrderPreview order={order} key={order._id} showStatus={true} onClick={onClick}/>
+            )))
+        }
+      </div>
+  );
 
-                <div className='formFooter'>
-                    <nav className='text text_type_main-default mt-20 mb-4'>
-                        Вы новый пользователь?&nbsp;
-                        <Link className='navLink' to={'/login'}>Войти</Link>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    )
 }

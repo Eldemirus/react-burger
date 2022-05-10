@@ -1,18 +1,16 @@
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../services/store";
-import {AuthState} from "../../services/reducers/auth";
+import {useDispatch, useSelector} from "../../services/store";
 import styles from './profile.module.css';
-import {updateUserThunk, UserProfileState} from "../../services/reducers/user-profile";
+import {updateUserThunk} from "../../services/reducers/user-profile";
 
 export const ProfileEdit = () => {
-    const {user} = useSelector<RootState, AuthState>(state => state.auth);
+    const {user} = useSelector(state => state.auth);
     const {
         savingUserFailed,
         savingUserStarted,
         savingUserSuccess
-    } = useSelector<RootState, UserProfileState>(state => state.userProfile);
+    } = useSelector(state => state.userProfile);
     const dispatch = useDispatch();
 
     const [email, setEmail] = useState('');

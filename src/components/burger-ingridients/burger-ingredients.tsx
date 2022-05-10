@@ -3,9 +3,7 @@ import ingStyles from './burger-ingredients.module.css';
 import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import Price from "../price/price";
 import {Ingredient, INGREDIENT_TYPE} from "../common/ingredient";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../services/store";
-import {IngredientsState,} from "../../services/reducers/ingredients";
+import {useDispatch, useSelector} from "../../services/store";
 import {DragSourceMonitor, useDrag} from "react-dnd";
 import {addItem, BUN} from "../../services/reducers/cart";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -133,7 +131,7 @@ const BurgerIngredients: React.FC = () => {
         ingredients,
         ingredientsLoading,
         ingredientsFailed
-    } = useSelector<RootState, IngredientsState>(state => state.ingredients);
+    } = useSelector(state => state.ingredients);
 
     const scrollerRef = useRef<HTMLHeadingElement>(null);
 

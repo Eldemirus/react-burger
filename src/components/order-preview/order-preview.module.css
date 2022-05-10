@@ -1,0 +1,101 @@
+.orderContainer {
+    composes: p-6 from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /*width: 584px;*/
+    /*height: 214px;*/
+    background: #1C1C21;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04), 0 0 2px rgba(0, 0, 0, 0.06), 0 0 1px rgba(0, 0, 0, 0.04);
+    border-radius: 40px;
+
+    gap: 24px;
+
+}
+
+.headerLine {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.orderNumber {
+    composes: text text_type_digits-default  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+}
+
+.orderTime {
+    composes: text text_type_main-default text_color_inactive from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+}
+
+.orderName {
+    composes: text text_type_main-medium  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+
+}
+
+    .orderStatus {
+        composes: text text_type_main-default  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    }
+
+    .orderStatusDone {
+        composes: orderStatus;
+        composes: text_color_success  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+
+    }
+.orderIngredients {
+    display: flex;
+}
+
+.ingredientBox {
+    width: 48px;
+
+}
+.ingredientImageBorder {
+    width: 64px;
+    height: 64px;
+    background-image: linear-gradient(63.18deg, #801AB3 0%, #4C4CFF 100%);
+    border: 2px solid transparent;
+    border-radius: 100px;
+}
+.ingredientImageContainer {
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    position: relative;
+    background: #131316;
+
+    /*background-image: linear-gradient(white, white), linear-gradient(to right, green, gold);*/
+    /*background-origin: border-box;*/
+    /*background-clip: content-box, border-box;*/
+    /*border: double 1em transparent;*/
+    border-radius: 100px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ingredientImage {
+    /*background-size: cover;*/
+    height: 60px;
+}
+
+.ingredientImageLast {
+    composes: ingredientImage;
+    opacity: 0.6;
+}
+
+.ingredientCounter {
+    composes: text text_type_main-default text_color_primary  from '~@ya.praktikum/react-developer-burger-ui-components/dist/ui/common.css';
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    width: 64px;
+    height: 64px;
+    z-index: 18;
+    color: #F2F2F3;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}

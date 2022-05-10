@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import AppHeader from "../app-header/app-header";
 import ErrorBoundary from "../error-boundary/error-boundary";
 import {BrowserRouter} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import {useDispatch} from "../../services/store";
 import {loadIngredients} from "../../services/reducers/ingredients";
 import {getUserThunk} from "../../services/reducers/auth";
 import {AppRouting} from "./app-routing";

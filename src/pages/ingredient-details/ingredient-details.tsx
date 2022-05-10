@@ -1,8 +1,6 @@
 import React from "react";
 import styles from "./ingredient-details.module.css";
-import {useSelector} from "react-redux";
-import {RootState} from "../../services/store";
-import {IngredientsState} from "../../services/reducers/ingredients";
+import {useSelector} from "../../services/store";
 import {useLocation, useMatch} from "react-router-dom";
 import {PageNotFound} from "../page-not-found/page-not-found";
 
@@ -22,7 +20,7 @@ const IngredientInfo: React.FC<IngredientInfoProps> = ({title, amount}) => {
 
 
 const IngredientDetails: React.FC = () => {
-    const {ingredients} = useSelector<RootState, IngredientsState>(state => state.ingredients);
+    const {ingredients} = useSelector(state => state.ingredients);
     const match = useMatch('/ingredient/:id');
     const location = useLocation();
     const state = location.state as {background: Location}
