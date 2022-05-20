@@ -75,7 +75,7 @@ export const sendOrderThunk = createAsyncThunk(
         return;
       }
 
-      sendOrder(orderData, auth.token)
+      return sendOrder(orderData, auth.token)
           .then(orderInfo => {
             const newOrder: Order = {id: orderInfo.order.number, name: orderInfo.name};
             dispatch(setOrder(newOrder));

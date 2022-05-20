@@ -99,10 +99,10 @@ export const loginUserThunk = createAsyncThunk(
     // Declare the type your function argument here:
     async ({email, password}: { email: string, password: string }, {dispatch,}) => {
         dispatch(setLoginStarted())
-        loginUser(email, password)
+        return loginUser(email, password)
             .then(result => {
                 dispatch(setUser(result.user));
-                const clearToken = result.accessToken.split('Bearer ')[1];
+                const clearToken = result.accessToken?.split('Bearer ')[1];
                 dispatch(setToken(clearToken));
                 dispatch(setLoginSuccess());
                 if (result.refreshToken) {
