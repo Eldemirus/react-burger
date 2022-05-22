@@ -48,6 +48,12 @@ export const orderListSlice = createSlice({
       state.total = 0;
       state.totalToday = 0;
     }
+  },
+  extraReducers: builder => {
+    builder.addCase(onMessage.pending, (state, action) => {
+    })
+    builder.addCase(onMessage.fulfilled, (state, action) => {
+    })
   }
 })
 

@@ -8,7 +8,7 @@ import {wsConnect, wsDisconnect} from "./actions/ws-actions";
 import {getOrderListFailed, getOrderListStarted, onMessage} from "./reducers/order-list";
 
 
-const wsOrderActions: TWsActionTypes = {
+export const wsOrderActions: TWsActionTypes = {
         wsConnect: wsConnect,
         wsDisconnect: wsDisconnect,
         onOpen: getOrderListStarted,
@@ -17,7 +17,7 @@ const wsOrderActions: TWsActionTypes = {
         onMessage: onMessage,
 }
 
-const wsOrdersMiddleware = socketMiddleware(wsOrderActions, `${WS_URL}`);
+export const wsOrdersMiddleware = socketMiddleware(wsOrderActions, `${WS_URL}`);
 
 const store = configureStore({
     reducer: rootReducer,

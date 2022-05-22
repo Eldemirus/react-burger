@@ -73,7 +73,7 @@ export const passwordEmailThunk = createAsyncThunk(
     // Declare the type your function argument here:
     async ({email}: { email: string }, {dispatch,}) => {
         dispatch(codeSendStart());
-        passwordReset(email)
+        return passwordReset(email)
             .then(_ => {
                 dispatch(setEmail(email));
                 dispatch(codeSendSuccess());
@@ -91,7 +91,7 @@ export const passwordSaveThunk = createAsyncThunk(
     // Declare the type your function argument here:
     async ({code, password}: { password: string, code: string }, {dispatch,}) => {
         dispatch(setSavePasswordStart());
-        passwordResetConfirmation(password, code)
+        return passwordResetConfirmation(password, code)
             .then(_ => {
                 dispatch(setSavePasswordSuccess());
             })

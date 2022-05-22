@@ -55,7 +55,7 @@ export const updateUserThunk = createAsyncThunk(
             dispatch(setSaveUserFailed());
             return
         }
-        saveUserInfo({email, name, password}, auth.token)
+        return saveUserInfo({email, name, password}, auth.token)
             .then(result => {
                 dispatch(setUser(result.user));
                 dispatch(setSaveUserSuccess());

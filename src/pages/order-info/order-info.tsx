@@ -42,9 +42,14 @@ const OrderInfo: React.FC = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const {orders, ordersLoading, ordersFailed} = useSelector(state => state.orderList);
+  const {token} = useSelector(state => state.auth);
   const state = location.state as { background: Location }
 
-  const orderId = match?.params.id ?? matchProfile?.params.id;
+  const modeProfile = useMemo(() => {
+    return matchProfile !== null;
+  }, [matchProfile])
+
+  const orderId = modeProfile ? matchProfile?.params.id : match?.params.id;
   const order = useMemo(() => orders.find(order => order._id === orderId), [orders, orderId]);
 
   const {ingredients} = useSelector(state => state.ingredients);
@@ -67,12 +72,18 @@ const OrderInfo: React.FC = () => {
 
   useEffect(() => {
     if (!state?.background) {
-      dispatch(wsConnect('orders/all'))
+      if (modeProfile) {
+        if (token) {
+          dispatch(wsConnect(`orders?token=${token}`));
+        }
+      } else {
+        dispatch(wsConnect('orders/all'));
+      }
       return () => {
         dispatch(wsDisconnect())
       }
     }
-  }, [dispatch, state])
+  }, [dispatch, state, token])
 
   const total = useMemo(() =>
           orderIngredients
